@@ -6,33 +6,78 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    class ArvoreBinaria<Tipo> where Tipo : IComparable<Tipo>
+    class ArvoreBinaria<Dado> where Dado : IComparable<Dado>
     {
-        NoArvore<Tipo> raiz;
-
-        Tipo tipo;
+        NoArvore<Dado> raiz, atual, antecessor;
+        int quantosNos = 0;
+        Dado dado;
 
         public ArvoreBinaria()
         {
-            raiz = new NoArvore<Tipo>();
+            raiz = new NoArvore<Dado>();
         }
-        public void AdicionarDado(Tipo T)
+        public NoArvore<Dado> Raiz
         {
-            
+            get { return raiz; }
+            set { raiz = value; }
         }
-        /*public void RemoverDado(Tipo T)
+        public NoArvore<Dado> Atual
+        {
+            get { return atual; }
+            set { atual = value; }
+        }
+        public NoArvore<Dado> Antecessor
+        {
+            get { return antecessor; }
+            set { antecessor = value; }
+        }
+        public bool Existe(Dado procurado)  // pesquisa binária não recursiva
+        {
+            antecessor = null;
+            atual = Raiz;
+            while (atual != null)
+            {
+                if (atual.Info.CompareTo(procurado) == 0)
+                    return true;
+                else
+                {
+                    antecessor = atual;
+                    if (procurado.CompareTo(atual.Info) < 0)
+                        atual = atual.Esq; // Desloca à esquerda
+                    else
+                        atual = atual.Dir; // Desloca à direita
+                }
+            }
+            return false; // Se atual == null, a chave não existe mas antecessor aponta o pai 
+        }
+
+        public void Incluir(Dado incluido)    // inclusão usando o método de pesquisa binária
+        {
+            if (Existe(incluido))
+                throw new Exception("Informação repetida");
+            else
+            {
+                var novoNo = new NoArvore<Dado>(incluido);
+                if (incluido.CompareTo(antecessor.Info) < 0)
+                    antecessor.Esq = novoNo;
+                else
+                    antecessor.Dir = novoNo;
+                quantosNos++;
+            }
+        }
+        public void RemoverDado(Dado T)
         {
 
-        }*/
-        public Tipo BuscarDado(Tipo T)
+        }
+        public Dado BuscarDado(Dado T)
         {
-            Tipo ret = default(Tipo);
+            Dado ret = default(Dado);
 
             return ret;
         }
-        private NoArvore<Tipo> BuscarNo()
+        private NoArvore<Dado> BuscarNo()
         {
-            NoArvore<Tipo> ret = null;
+            NoArvore<Dado> ret = null;
 
             return ret;
         }
