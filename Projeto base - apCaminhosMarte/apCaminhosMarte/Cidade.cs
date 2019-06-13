@@ -35,10 +35,15 @@ namespace apCaminhosMarte
         //aos atributos os dados de uma linha do arquivo texto.
         public Cidade(string s)
         {
-            idCidade = int.Parse(s.Substring(inicioId, tamanhoId));
-            nome = s.Substring(inicioNome, tamanhoNome);
-            coordenadaX = int.Parse(s.Substring(inicioX, tamanhoX));
-            coordenadaY = int.Parse(s.Substring(inicioY, tamanhoY));
+            this.idCidade = int.Parse(s.Substring(inicioId, tamanhoId));
+            this.nome = s.Substring(inicioNome, tamanhoNome);
+            this.coordenadaX = int.Parse(s.Substring(inicioX, tamanhoX));
+            this.coordenadaY = int.Parse(s.Substring(inicioY, tamanhoY));
+        }
+
+        public int CompareTo(Cidade c)
+        {
+            return this.IdCidade - c.IdCidade;
         }
     }
 }

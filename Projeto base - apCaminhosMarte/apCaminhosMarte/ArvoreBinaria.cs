@@ -87,11 +87,6 @@ namespace apCaminhosMarte
             // nó a excluir tem 2 filhos
             antecessor = atual;
             NoArvore2<T> aux = atual.getEsq();
-            Universidade Estadual de Campinas – Unicamp
-            Colégio Técnico de Campinas – Cotuca - DPD
-            PD305 - Estruturas de Dados
-            Prof. Francisco da Fonseca Rodrigues
-            132
             while (aux.getDir() != null) // procura maior dos menores filhos
             {
             antecessor = aux;
