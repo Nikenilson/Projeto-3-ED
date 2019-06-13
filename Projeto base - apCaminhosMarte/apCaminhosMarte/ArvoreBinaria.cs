@@ -65,8 +65,52 @@ namespace apCaminhosMarte
                 quantosNos++;
             }
         }
+
+        /*
+         
+            MÉTODO COMENTADO TEMPORÁRIO PARA USO INTERNO, SENHOR SAMUEL.
+         
+        public boolean excluiNo(T excluido)
+        {
+            if (!existe(excluido))
+            return false;
+            else
+            {
+            // antecessor e atual foram definidos em existe()
+            if (atual.getDir() == null) // nó a excluir tem 0 ou 1 filho?
+            liga(antecessor, excluido, atual.getEsq());
+            else
+            if (atual.getEsq() == null)
+            liga(antecessor, excluido, atual.getDir());
+            else
+            {
+            // nó a excluir tem 2 filhos
+            antecessor = atual;
+            NoArvore2<T> aux = atual.getEsq();
+            Universidade Estadual de Campinas – Unicamp
+            Colégio Técnico de Campinas – Cotuca - DPD
+            PD305 - Estruturas de Dados
+            Prof. Francisco da Fonseca Rodrigues
+            132
+            while (aux.getDir() != null) // procura maior dos menores filhos
+            {
+            antecessor = aux;
+            aux = aux.getDir();
+            }
+            atual.setElemento(aux.getElemento()); // troca conteúdo
+            antecessor.setDir(aux.getEsq());
+            aux = null;
+            }
+            this.setTamanho(this.getTamanho()-1);
+            return true;
+            }
+            }
+         */
+
         public void RemoverDado(Dado T)
         {
+            if (!Existe(T))
+                throw new Exception("Dado inexistente");
 
         }
         public Dado BuscarDado(Dado T)
