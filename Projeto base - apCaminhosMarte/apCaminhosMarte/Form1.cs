@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 /// 
 /// Samuel Gomes de Lima Dias - 18169 \\ Victor Botin Avelino - 18172
@@ -16,6 +17,10 @@ namespace apCaminhosMarte
 {
     public partial class Form1 : Form
     {
+        ArvoreBinaria<Cidade> arvore;
+        Caminho[][] matriz; 
+
+
         public Form1()
         {
             InitializeComponent();
@@ -29,6 +34,45 @@ namespace apCaminhosMarte
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Buscar caminhos entre cidades selecionadas");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            MessageBox.Show("Selecione o arquivo CidadesMarte.txt");
+
+            if(oFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var arq = new StreamReader(oFileDialog.FileName);
+                arvore = new ArvoreBinaria<Cidade>();
+
+                string linha = null;
+                while(!arq.EndOfStream)
+                {
+                    linha = arq.ReadLine();
+                    arvore.Incluir(new Cidade(linha));
+
+                }
+                arq.Close();
+            }
+
+            MessageBox.Show("Selecione o arquivo CaminhosEntreCidadesMarte.txt");
+
+            if (oFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var arq = new StreamReader(oFileDialog.FileName);
+                
+
+                string linha = null;
+                while (!arq.EndOfStream)
+                {
+                    linha = arq.ReadLine();
+                    // caminho[][] = alula
+
+                }
+                arq.Close();
+            }
+
+
         }
     }
 }
