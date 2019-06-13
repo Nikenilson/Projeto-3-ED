@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-  public class NoArvore<Tipo> : IComparable<NoArvore<Tipo>> , IGravarEmArquivo
+  public class NoArvore<Tipo> : IComparable<NoArvore<Tipo>> //, IGravarEmArquivo
                                 where Tipo: IComparable<Tipo>
   {
     Tipo info;  // informação armazenada
