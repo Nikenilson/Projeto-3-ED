@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace apCaminhosMarte
 {
@@ -10,11 +11,10 @@ namespace apCaminhosMarte
     {
         NoArvore<Dado> raiz, atual, antecessor;
         int quantosNos = 0;
-        Dado dado;
 
         public ArvoreBinaria()
         {
-            raiz = new NoArvore<Dado>();
+            raiz = null;
         }
         public NoArvore<Dado> Raiz
         {
@@ -51,6 +51,10 @@ namespace apCaminhosMarte
             return false; // Se atual == null, a chave não existe mas antecessor aponta o pai 
         }
 
+        
+
+
+
         public void Incluir(Dado incluido)    // inclusão usando o método de pesquisa binária
         {
             if (Existe(incluido))
@@ -58,7 +62,9 @@ namespace apCaminhosMarte
             else
             {
                 var novoNo = new NoArvore<Dado>(incluido);
-                if (incluido.CompareTo(antecessor.Info) < 0)
+                if (antecessor == null)
+                    raiz = novoNo;
+                else if (incluido.CompareTo(antecessor.Info) < 0)
                     antecessor.Esq = novoNo;
                 else
                     antecessor.Dir = novoNo;

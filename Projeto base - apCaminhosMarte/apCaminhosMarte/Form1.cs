@@ -18,10 +18,8 @@ namespace apCaminhosMarte
     public partial class Form1 : Form
     {
         ArvoreBinaria<Cidade> arvore;
-        Caminho[][] matriz;
-
-        Bitmap DrawArea;
-
+        Caminho[,] matriz;
+        int qtdCidades = 0;
 
         public Form1()
         {
@@ -45,6 +43,12 @@ namespace apCaminhosMarte
 
             //Criar método Percorrer na classe Caminho
             //Pegar origem e destino como parâmetro.
+
+            /*No evento Click do btnBuscar – 
+             * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
+             * exibindo todos os caminhos no dvgCaminhos (um por linha) 
+             * e o melhor caminho no dgvMelhorCaminho. 
+             * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.*/
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -61,7 +65,7 @@ namespace apCaminhosMarte
                 {
                     linha = arq.ReadLine();
                     arvore.Incluir(new Cidade(linha));
-
+                    qtdCidades++;
                 }
                 arq.Close();
             }
@@ -71,12 +75,12 @@ namespace apCaminhosMarte
             if (oFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var arq = new StreamReader(oFileDialog.FileName);
-                
+                matriz = new Caminho[qtdCidades,qtdCidades];
                 string linha = null;
                 while (!arq.EndOfStream)
                 {
                     linha = arq.ReadLine();
-                    matriz[int.Parse(linha.Substring(0, 3))][int.Parse(linha.Substring(3, 6))] = new Caminho(linha); 
+                    matriz[int.Parse(linha.Substring(0, 3)),int.Parse(linha.Substring(3, 3))] = new Caminho(linha); 
                 }
                 arq.Close();
             }
@@ -85,22 +89,28 @@ namespace apCaminhosMarte
 
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
-            DrawArea = new Bitmap(pbMapa.Size.Width, pbMapa.Size.Height);
-            Graphics g = Graphics.FromImage(DrawArea);
-            SolidBrush meuPincel = new SolidBrush(Color.Black);
-            Cidade aux;
+            Graphics g = e.Graphics;
+           
+            DesenhaCidades(g, arvore.Raiz);
+        }
 
-            //ta errado, mas eh so temporario pra ter algo aqui
-            while (arvore.Atual != null)
+        private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
+        {
+            if (atualRecursivo != null)
             {
-                
-                aux = arvore.visitar(arvore.Atual);
-                g.FillEllipse(meuPincel, aux.CoordenadaX * (pbMapa.Size.Width / 4096), aux.CoordenadaY * (pbMapa.Size.Height / 2048), 25, 25);
+                SolidBrush meuPincel = new SolidBrush(Color.Black);
+                float x = pbMapa.Size.Width * atualRecursivo.Info.CoordenadaX / 4096;
+                float y = pbMapa.Size.Height * atualRecursivo.Info.CoordenadaY / 2048;
+                g.FillEllipse(meuPincel, x, y, 18, 18);
+                g.DrawString(atualRecursivo.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5 , y + 15);
+
+                DesenhaCidades(g, atualRecursivo.Esq);
+                DesenhaCidades(g, atualRecursivo.Dir);
             }
-                
-
-
-            g.Dispose();
+        }
+        private void DrawFrame(object sender, EventArgs e)
+        {
+            pbMapa.Invalidate();
         }
     }
 }
