@@ -18,7 +18,9 @@ namespace apCaminhosMarte
     public partial class Form1 : Form
     {
         ArvoreBinaria<Cidade> arvore;
-        Caminho[][] matriz; 
+        Caminho[][] matriz;
+
+        Bitmap DrawArea;
 
 
         public Form1()
@@ -83,7 +85,22 @@ namespace apCaminhosMarte
 
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
+            DrawArea = new Bitmap(pbMapa.Size.Width, pbMapa.Size.Height);
+            Graphics g = Graphics.FromImage(DrawArea);
+            SolidBrush meuPincel = new SolidBrush(Color.Black);
+            Cidade aux;
 
+            //ta errado, mas eh so temporario pra ter algo aqui
+            while (arvore.Atual != null)
+            {
+                
+                aux = arvore.visitar(arvore.Atual);
+                g.FillEllipse(meuPincel, aux.CoordenadaX * (pbMapa.Size.Width / 4096), aux.CoordenadaY * (pbMapa.Size.Height / 2048), 25, 25);
+            }
+                
+
+
+            g.Dispose();
         }
     }
 }
