@@ -61,17 +61,19 @@ namespace apCaminhosMarte
             {
                 var arq = new StreamReader(oFileDialog.FileName);
                 
-
                 string linha = null;
                 while (!arq.EndOfStream)
                 {
                     linha = arq.ReadLine();
-                    // caminho[][] = alula
-
+                    matriz[int.Parse(linha.Substring(0, 3))][int.Parse(linha.Substring(3, 6))] = new Caminho(linha); 
                 }
                 arq.Close();
             }
 
+        }
+
+        private void pbMapa_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }

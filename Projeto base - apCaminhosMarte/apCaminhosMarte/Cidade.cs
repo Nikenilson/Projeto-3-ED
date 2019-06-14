@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace apCaminhosMarte
+namespace apCaminhosMarte 
 {
-    class Cidade
+    class Cidade : IComparable<Cidade>
     {
         //Atributos:
         private int idCidade;
