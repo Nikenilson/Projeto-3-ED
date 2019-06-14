@@ -44,5 +44,8 @@ namespace apCaminhosMarte
             this.tempo = int.Parse(s.Substring(inicioTempo, tamanhoTempo));
             this.custo = int.Parse(s.Substring(inicioCusto, tamanhoCusto));
         }
+
+        
+        
     }
 }

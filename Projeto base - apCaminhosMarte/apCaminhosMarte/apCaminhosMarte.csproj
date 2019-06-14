@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArvoreBinaria.cs" />
+    <Compile Include="Caminho.cs" />
     <Compile Include="Cidade.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

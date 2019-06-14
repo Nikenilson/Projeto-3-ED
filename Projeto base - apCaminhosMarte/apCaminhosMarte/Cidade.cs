@@ -33,12 +33,12 @@ namespace apCaminhosMarte
 
         //Construtor da classe. Especificamente, este construtor atribui
         //aos atributos os dados de uma linha do arquivo texto.
-        public Cidade(string s)
+        public Cidade(string linhaArquivo)
         {
-            this.idCidade = int.Parse(s.Substring(inicioId, tamanhoId));
-            this.nome = s.Substring(inicioNome, tamanhoNome);
-            this.coordenadaX = int.Parse(s.Substring(inicioX, tamanhoX));
-            this.coordenadaY = int.Parse(s.Substring(inicioY, tamanhoY));
+            this.idCidade = int.Parse(linhaArquivo.Substring(inicioId, tamanhoId));
+            this.nome = linhaArquivo.Substring(inicioNome, tamanhoNome);
+            this.coordenadaX = int.Parse(linhaArquivo.Substring(inicioX, tamanhoX));
+            this.coordenadaY = int.Parse(linhaArquivo.Substring(inicioY, tamanhoY));
         }
 
         public int CompareTo(Cidade c)

@@ -33,7 +33,16 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
+            Cidade origem, destino;
+            Caminho caminhoAFazer;
+
             MessageBox.Show("Buscar caminhos entre cidades selecionadas");
+
+            origem  = (Cidade)lsbOrigem.SelectedItem;
+            destino = (Cidade)lsbDestino.SelectedItem;
+
+            //Criar método Percorrer na classe Caminho
+            //Pegar origem e destino como parâmetro.
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -84,13 +93,16 @@ namespace apCaminhosMarte
  * Roteiro de utilização
 Quando o programa iniciar sua execução, ler o arquivo CidadesMarte.txt e montar uma árvore
 binária de busca armazenando o objeto que representa uma cidade, como todos os seus campos.
+
 No evento Paint do PictureBox - exibir os nomes e locais das cidades no mapa, de acordo com a
 proporção entre coordenadas das cidades referentes ao tamanho original (4096x2048) e as
 dimensões atuais do picturebox.
+
 No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
 lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) e o melhor
 caminho no dgvMelhorCaminho. Usar retas para ligar as cidades no mapa referente ao caminho
 da linha selecionada no dgvCaminhos.
+
 Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.
 
     */
