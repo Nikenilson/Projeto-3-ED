@@ -119,11 +119,8 @@ namespace apCaminhosMarte
 
                         g.DrawLine(minhaCaneta, xI, yI, xF, yF);
                     }
-                }
-
-            
+                }  
         }
-
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
             if (atualRecursivo != null)
@@ -150,10 +147,11 @@ namespace apCaminhosMarte
  * Roteiro de utilização
 Quando o programa iniciar sua execução, ler o arquivo CidadesMarte.txt e montar uma árvore
 binária de busca armazenando o objeto que representa uma cidade, como todos os seus campos.
+// tA lA
 
 No evento Paint do PictureBox - exibir os nomes e locais das cidades no mapa, de acordo com a
 proporção entre coordenadas das cidades referentes ao tamanho original (4096x2048) e as
-dimensões atuais do picturebox.
+dimensões atuais do picturebox.// tA lA
 
 No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
 lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) e o melhor
