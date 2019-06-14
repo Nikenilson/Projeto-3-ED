@@ -41,6 +41,14 @@ namespace apCaminhosMarte
             this.coordenadaY = int.Parse(linhaArquivo.Substring(inicioY, tamanhoY));
         }
 
+        public Cidade(int i)
+        {
+            this.idCidade = i;
+            this.nome = null;
+            this.coordenadaX = 0;
+            this.coordenadaY = 0;
+        }
+
         public int CompareTo(Cidade c)
         {
             return this.IdCidade - c.IdCidade;

@@ -92,6 +92,36 @@ namespace apCaminhosMarte
             Graphics g = e.Graphics;
            
             DesenhaCidades(g, arvore.Raiz);
+            DesenhaLinhas(g);
+        }
+
+        private void DesenhaLinhas(Graphics g)
+        {
+            Caminho aux = null;
+            Cidade c1 = null;
+            Cidade c2 = null;
+            Pen minhaCaneta = new Pen(Color.DimGray, 2);
+            for (int linhas = 0; linhas < qtdCidades; linhas++)
+                for (int colunas = 0; colunas < qtdCidades; colunas++)
+                {
+                    if (matriz[linhas, colunas] != null)
+                    {
+                        aux = matriz[linhas, colunas];
+                        c1 = arvore.BuscarDado(new Cidade(linhas));
+                        c2 = arvore.BuscarDado(new Cidade(colunas));
+
+                        float xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
+                        float yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
+                        float xF = pbMapa.Size.Width * c2.CoordenadaX / 4096;
+                        float yF = pbMapa.Size.Height * c2.CoordenadaY / 2048;
+
+                        //Onde I => Inicial, F => Final
+
+                        g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+                    }
+                }
+
+            
         }
 
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
@@ -99,9 +129,9 @@ namespace apCaminhosMarte
             if (atualRecursivo != null)
             {
                 SolidBrush meuPincel = new SolidBrush(Color.Black);
-                float x = pbMapa.Size.Width * atualRecursivo.Info.CoordenadaX / 4096;
-                float y = pbMapa.Size.Height * atualRecursivo.Info.CoordenadaY / 2048;
-                g.FillEllipse(meuPincel, x, y, 18, 18);
+                float x = pbMapa.Size.Width * atualRecursivo.Info.CoordenadaX / 4096 - 8;
+                float y = pbMapa.Size.Height * atualRecursivo.Info.CoordenadaY / 2048 - 8;
+                g.FillEllipse(meuPincel, x, y, 16, 16);
                 g.DrawString(atualRecursivo.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5 , y + 15);
 
                 DesenhaCidades(g, atualRecursivo.Esq);

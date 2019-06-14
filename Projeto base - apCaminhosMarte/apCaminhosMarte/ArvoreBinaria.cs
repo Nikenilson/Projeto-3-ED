@@ -116,16 +116,11 @@ namespace apCaminhosMarte
         }
         public Dado BuscarDado(Dado T)
         {
-            Dado ret = default(Dado);
-
-            return ret;
+            if (Existe(T))
+                return atual.Info;
+            return default(Dado);
         }
-        private NoArvore<Dado> BuscarNo()
-        {
-            NoArvore<Dado> ret = null;
-
-            return ret;
-        }
-
     }
 }
+
+
