@@ -35,48 +35,57 @@ namespace apCaminhosMarte
         {
             int idCidadeAtual = lsbOrigem.SelectedIndex;
             int idCidadeDestino = lsbDestino.SelectedIndex;
+
             int aux = 0;
+            bool acabou = false;
+            bool regressivo = false;
+
             Caminho caminhoAtual = null;
-            
+            PilhaLista<Caminho>[] caminhosValidos = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))]; //muda depois
+
             PilhaLista<Caminho>[] possibilidades = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
 
             var caminhos = new PilhaLista<Caminho>();
             var possibilidades2 = new PilhaLista<Caminho>();
 
-            for (int linhas = 0; linhas < qtdCidades; linhas++)
+            do
+            {
                 for (int colunas = 0; colunas < qtdCidades; colunas++)
                 {
-                    if (matriz[linhas, colunas] != null && idCidadeAtual == matriz[linhas, colunas].IdCidadeOrigem)
-                        caminhos.Empilhar(matriz[linhas, colunas]);
+                    if (matriz[idCidadeAtual, colunas] != null && idCidadeAtual == matriz[idCidadeAtual, colunas].IdCidadeOrigem)
+                        caminhos.Empilhar(matriz[idCidadeAtual, colunas]);
                 }
-            possibilidades[aux] = caminhos;
-            
-            
+                possibilidades[aux] = caminhos;
 
-            while (!possibilidades[aux].EstaVazia())
-            {
-                caminhoAtual = possibilidades[aux].Desempilhar();
+                if (possibilidades[aux].EstaVazia())
+                    regressivo = true;
+                else
+                {
+                    caminhoAtual = possibilidades[aux].Desempilhar();
+                    idCidadeAtual = caminhoAtual.IdCidadeDestino;
+                }
+                    aux++;
                 
-                for (int linhas = 0; linhas < qtdCidades; linhas++)
-                    for (int colunas = 0; colunas < qtdCidades; colunas++)
-                    {
-                        if (caminhoAtual.IdCidadeDestino == matriz[linhas, colunas].IdCidadeOrigem)
-                            possibilidades2.Empilhar(matriz[linhas, colunas]);
-                    }
+            } while (!acabou);
 
-                aux++;
+
+
+
+            //Mostra todos os caminhos no dgvCaminhos
+            for(int i = 0; i < caminhosValidos.Length; i++)
+            {
+                while(!caminhosValidos[i].EstaVazia())
+                dvgCaminhos. = caminhosValidos[i].Desempilhar();
+                
             }
 
-           /* Cidade origem, destino;
-            Caminho caminhoAFazer;
 
-            MessageBox.Show("Buscar caminhos entre cidades selecionadas");
 
-            origem  = (Cidade)lsbOrigem.SelectedItem;
-            destino = (Cidade)lsbDestino.SelectedItem;
-            */
-           //Criar método Percorrer na classe Caminho
-           //Pegar origem e destino como parâmetro.
+
+            //Melhor caminho
+
+
+
 
             /*No evento Click do btnBuscar – 
              * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
