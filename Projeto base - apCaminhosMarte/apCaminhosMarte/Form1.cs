@@ -33,20 +33,54 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            Cidade origem, destino;
+            int idCidadeAtual = lsbOrigem.SelectedIndex;
+            int idCidadeDestino = lsbDestino.SelectedIndex;
+            int aux = 0;
+            Caminho caminhoAtual = null;
+            
+            PilhaLista<Caminho>[] possibilidades = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
+
+            var caminhos = new PilhaLista<Caminho>();
+            var possibilidades2 = new PilhaLista<Caminho>();
+
+            for (int linhas = 0; linhas < qtdCidades; linhas++)
+                for (int colunas = 0; colunas < qtdCidades; colunas++)
+                {
+                    if (idCidadeAtual == matriz[linhas, colunas].IdCidadeOrigem)
+                        caminhos.Empilhar(matriz[linhas, colunas]);
+                }
+            possibilidades[aux] = caminhos;
+            
+            
+
+            while (!possibilidades[aux].EstaVazia())
+            {
+                caminhoAtual = possibilidades[aux].Desempilhar();
+                
+                for (int linhas = 0; linhas < qtdCidades; linhas++)
+                    for (int colunas = 0; colunas < qtdCidades; colunas++)
+                    {
+                        if (caminhoAtual.IdCidadeDestino == matriz[linhas, colunas].IdCidadeOrigem)
+                            possibilidades2.Empilhar(matriz[linhas, colunas]);
+                    }
+
+                aux++;
+            }
+
+           /* Cidade origem, destino;
             Caminho caminhoAFazer;
 
             MessageBox.Show("Buscar caminhos entre cidades selecionadas");
 
             origem  = (Cidade)lsbOrigem.SelectedItem;
             destino = (Cidade)lsbDestino.SelectedItem;
-
-            //Criar método Percorrer na classe Caminho
-            //Pegar origem e destino como parâmetro.
+            */
+           //Criar método Percorrer na classe Caminho
+           //Pegar origem e destino como parâmetro.
 
             /*No evento Click do btnBuscar – 
              * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
-             * exibindo todos os caminhos no dvgCaminhos (um por linha) 
+             * exibindo todos os caminhos no dgvCaminhos (um por linha) 
              * e o melhor caminho no dgvMelhorCaminho. 
              * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.*/
         }
@@ -95,6 +129,32 @@ namespace apCaminhosMarte
             DesenhaLinhas(g);
         }
 
+        private void desenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
+                           int x, int y, double angulo, double incremento,
+                           double comprimento, Graphics g)
+        {
+            int xf, yf;
+            if (raiz != null)
+            {
+                Pen caneta = new Pen(Color.Red);
+                xf = (int)Math.Round(x + Math.Cos(angulo) * comprimento);
+                yf = (int)Math.Round(y + Math.Sin(angulo) * comprimento);
+                if (primeiraVez)
+                    yf = 25;
+                g.DrawLine(caneta, x, y, xf, yf);
+                // sleep(100);
+                desenhaArvore(false, raiz.Esq, xf, yf, Math.PI / 2 + incremento,
+                                                 incremento * 0.60, comprimento * 0.8, g);
+                desenhaArvore(false, raiz.Dir, xf, yf, Math.PI / 2 - incremento,
+                                                  incremento * 0.60, comprimento * 0.8, g);
+                // sleep(100);
+                SolidBrush preenchimento = new SolidBrush(Color.Yellow);
+                g.FillEllipse(preenchimento, xf - 15, yf - 15, 30, 30);
+                g.DrawString(Convert.ToString(raiz.Info.Nome), new Font("Comic Sans", 12),
+                              new SolidBrush(Color.Black), xf - 15, yf - 10);
+            }
+        }
+
         private void DesenhaLinhas(Graphics g)
         {
             Caminho aux = null;
@@ -139,26 +199,36 @@ namespace apCaminhosMarte
         {
             pbMapa.Invalidate();
         }
+
+        private void tpArvore_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            desenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
+        }
     }
 }
 
 /*
- * 
- * Roteiro de utilização
-Quando o programa iniciar sua execução, ler o arquivo CidadesMarte.txt e montar uma árvore
+
+Roteiro de utilização
+
+-Quando o programa iniciar sua execução, ler o arquivo CidadesMarte.txt e montar uma árvore
 binária de busca armazenando o objeto que representa uma cidade, como todos os seus campos.
 // tA lA
 
-No evento Paint do PictureBox - exibir os nomes e locais das cidades no mapa, de acordo com a
+-No evento Paint do PictureBox - exibir os nomes e locais das cidades no mapa, de acordo com a
 proporção entre coordenadas das cidades referentes ao tamanho original (4096x2048) e as
 dimensões atuais do picturebox.// tA lA
 
-No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
-lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) e o melhor
-caminho no dgvMelhorCaminho. Usar retas para ligar as cidades no mapa referente ao caminho
+-No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
+lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) 
+
+-O melhor caminho no dgvMelhorCaminho. 
+
+-Usar retas para ligar as cidades no mapa referente ao caminho
 da linha selecionada no dgvCaminhos.
 
-Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.
+-Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.// tA lA
 
-    */
+*/
 

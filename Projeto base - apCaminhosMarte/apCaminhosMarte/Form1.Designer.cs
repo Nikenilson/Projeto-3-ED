@@ -55,11 +55,13 @@
             this.pbMapa = new System.Windows.Forms.PictureBox();
             this.tpArvore = new System.Windows.Forms.TabPage();
             this.oFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.pnlArvore = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tpRotas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).BeginInit();
+            this.tpArvore.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -322,6 +324,7 @@
             // 
             // tpArvore
             // 
+            this.tpArvore.Controls.Add(this.pnlArvore);
             this.tpArvore.Location = new System.Drawing.Point(4, 22);
             this.tpArvore.Name = "tpArvore";
             this.tpArvore.Padding = new System.Windows.Forms.Padding(3);
@@ -329,10 +332,18 @@
             this.tpArvore.TabIndex = 1;
             this.tpArvore.Text = "Árvore de Cidades";
             this.tpArvore.UseVisualStyleBackColor = true;
+            this.tpArvore.Paint += new System.Windows.Forms.PaintEventHandler(this.tpArvore_Paint);
             // 
             // oFileDialog
             // 
             this.oFileDialog.FileName = "openFileDialog1";
+            // 
+            // pnlArvore
+            // 
+            this.pnlArvore.Location = new System.Drawing.Point(6, 6);
+            this.pnlArvore.Name = "pnlArvore";
+            this.pnlArvore.Size = new System.Drawing.Size(1305, 510);
+            this.pnlArvore.TabIndex = 0;
             // 
             // Form1
             // 
@@ -349,6 +360,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).EndInit();
+            this.tpArvore.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -381,6 +393,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.OpenFileDialog oFileDialog;
+        private System.Windows.Forms.Panel pnlArvore;
     }
 }
 
