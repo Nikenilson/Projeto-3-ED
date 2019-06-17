@@ -46,7 +46,7 @@ namespace apCaminhosMarte
             for (int linhas = 0; linhas < qtdCidades; linhas++)
                 for (int colunas = 0; colunas < qtdCidades; colunas++)
                 {
-                    if (idCidadeAtual == matriz[linhas, colunas].IdCidadeOrigem)
+                    if (matriz[linhas, colunas] != null && idCidadeAtual == matriz[linhas, colunas].IdCidadeOrigem)
                         caminhos.Empilhar(matriz[linhas, colunas]);
                 }
             possibilidades[aux] = caminhos;
@@ -87,6 +87,30 @@ namespace apCaminhosMarte
 
         private void Form1_Load(object sender, EventArgs e)
         {
+           
+            var arq = new StreamReader("CidadesMarte.txt");
+            arvore = new ArvoreBinaria<Cidade>();
+
+            string linha = null;
+            while (!arq.EndOfStream)
+            {
+                linha = arq.ReadLine();
+                arvore.Incluir(new Cidade(linha));
+                qtdCidades++;
+            }
+            arq.Close();
+       
+            var arq2 = new StreamReader("CaminhosEntreCidadesMarte.txt");
+            matriz = new Caminho[qtdCidades, qtdCidades];
+            string linha2 = null;
+            while (!arq2.EndOfStream)
+            {
+                linha2 = arq2.ReadLine();
+                matriz[int.Parse(linha2.Substring(0, 3)), int.Parse(linha2.Substring(3, 3))] = new Caminho(linha2);
+            }
+            arq2.Close();
+            
+            /*
             MessageBox.Show("Selecione o arquivo CidadesMarte.txt");
 
             if(oFileDialog.ShowDialog() == DialogResult.OK)
@@ -118,6 +142,7 @@ namespace apCaminhosMarte
                 }
                 arq.Close();
             }
+            */
 
         }
 
