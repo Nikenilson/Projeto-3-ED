@@ -295,7 +295,6 @@ namespace apCaminhosMarte
         {
             Graphics g = pbMapa.CreateGraphics();
             SolidBrush meuPincel = new SolidBrush(Color.Black);
-            int id = 0;
             int coluna = 0;
 
            for(int c = 0; c < (sender as DataGridView).ColumnCount; c++)
@@ -310,7 +309,7 @@ namespace apCaminhosMarte
                 g.FillEllipse(meuPincel, x, y, 16, 16);
                 g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5, y + 15);
 
-            }
+           }
         }
     }
 }
