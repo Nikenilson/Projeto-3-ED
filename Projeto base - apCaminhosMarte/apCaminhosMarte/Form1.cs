@@ -69,9 +69,6 @@ namespace apCaminhosMarte
                 
             } while (!acabou);
 
-
-
-
             //Mostra todos os caminhos no dgvCaminhos
             for(int auxE = 0; auxE < caminhosValidos.Length; auxE++)
             {
@@ -296,7 +293,24 @@ namespace apCaminhosMarte
 
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            Graphics g = pbMapa.CreateGraphics();
+            SolidBrush meuPincel = new SolidBrush(Color.Black);
+            int id = 0;
+            int coluna = 0;
 
+           for(int c = 0; c < (sender as DataGridView).ColumnCount; c++)
+           {
+                string linha = (sender as DataGridView).Rows[e.RowIndex].Cells[coluna].Value.ToString();
+                if (linha == null || linha == "")
+                    break;
+                string[] linhaVetor = linha.Split('-');
+                arvore.Existe(new Cidade(Convert.ToInt32(linhaVetor[0])));
+                float x = pbMapa.Size.Width * arvore.Atual.Info.CoordenadaX / 4096 - 8;
+                float y = pbMapa.Size.Height * arvore.Atual.Info.CoordenadaY / 2048 - 8;
+                g.FillEllipse(meuPincel, x, y, 16, 16);
+                g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5, y + 15);
+
+            }
         }
     }
 }
