@@ -1,5 +1,5 @@
 ﻿using System;
-public class NoLista<Dado> where Dado : IComparable<Dado>
+public class NoLista<Dado> where Dado : IComparable<Dado>, ICloneable
 { 
     Dado info;
     NoLista<Dado> prox;
@@ -24,6 +24,33 @@ public class NoLista<Dado> where Dado : IComparable<Dado>
     {
         get => prox;
         set => prox = value;
+    }
+    public NoLista(NoLista<Dado> modelo)
+    {
+        if (modelo == null)
+            throw new Exception("Modelo ausente");
+        
+
+        this.info = (Dado) modelo.info.Clone();
+        if (modelo.Prox != null)
+            this.prox = (NoLista<Dado>)modelo.prox.Clone();
+        else
+            this.prox = null;
+    }
+
+    public Object Clone()
+    {
+        NoLista<Dado> obj = null;
+
+        try
+        {
+            obj = new NoLista<Dado>(this);
+        }
+        catch (Exception erro)
+        {
+        }
+
+        return obj;
     }
 }
 

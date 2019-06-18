@@ -117,14 +117,13 @@ namespace apCaminhosMarte
 
                 }
             }
-            
-        
+
+
             //ha caminho acabou aqui
 
             //Mostra todos os caminhos no dgvCaminhos
             TodosOsCaminhos(caminhosValidos, idCidadeOrigem, idCidadeDestino);
 
-            //Melhor caminho
             MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
 
             /*No evento Click do btnBuscar – 
@@ -136,22 +135,27 @@ namespace apCaminhosMarte
         }
         public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
         {
-            for (int i = caminhosValidos.Count- 1; i >= 0; i--) 
+            if (caminhosValidos.Count == 0)
+                MessageBox.Show("Nenhum caminho encontrado");
+            else
             {
-                PilhaLista<Caminho> auxiliar = caminhosValidos[i];
-
-                string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
-                int aux = 0;
-                Caminho caminhoAux;
-                arvore.Existe(new Cidade(idCidadeOrigem));
-                row[aux++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
-                while (!auxiliar.EstaVazia())
+                for (int i = caminhosValidos.Count - 1; i >= 0; i--)
                 {
-                    caminhoAux = auxiliar.Desempilhar(); 
-                    arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
-                    row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+                    PilhaLista<Caminho> auxiliar = (PilhaLista<Caminho>)caminhosValidos[i].Clone();
+
+                    string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
+                    int aux = 0;
+                    Caminho caminhoAux;
+                    arvore.Existe(new Cidade(idCidadeOrigem));
+                    row[aux++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
+                    while (!auxiliar.EstaVazia())
+                    {
+                        caminhoAux = auxiliar.Desempilhar();
+                         arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
+                        row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+                    }
+                    dgvCaminho.Rows.Add(row);
                 }
-                dgvCaminho.Rows.Add(row);
             }
         }
         public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
@@ -161,13 +165,13 @@ namespace apCaminhosMarte
             List<PilhaLista<Caminho>> aux = new List<PilhaLista<Caminho>>();
             while (!caminhosValidos[0].EstaVazia())
             {
-                aux.Add(caminhosValidos[0]);//.Clone();
+                aux.Add((PilhaLista<Caminho>) caminhosValidos[0].Clone());
                 menorDistancia =+ caminhosValidos[0].Desempilhar().Distancia;
             }
           
             for (int auxI = 1; auxI < caminhosValidos.Count; auxI++)
             {
-                aux.Add(caminhosValidos[auxI]);//.Clone();
+                aux.Add((PilhaLista<Caminho>) caminhosValidos[auxI].Clone());
                 int distancia = 0;
                 while (!caminhosValidos[auxI].EstaVazia())
                     distancia =+ caminhosValidos[auxI].Desempilhar().Distancia;
@@ -181,23 +185,27 @@ namespace apCaminhosMarte
 
             for (int auxI = 0; auxI < aux.Count; auxI++)
             {
+                caminhosValidos.Clear();
                 caminhosValidos.Add(aux[auxI]);
             }
 
             PilhaLista<Caminho> melhorCaminho = caminhosValidos[indiceMenor];
 
-            string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
+            string[] rowMelhorCaminho = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
             int i = 0;
             Caminho caminhoAux;
+
+            arvore.Existe(new Cidade(idCidadeOrigem));
+            rowMelhorCaminho[i++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
+
             while (!melhorCaminho.EstaVazia())
             {
                 caminhoAux = melhorCaminho.Desempilhar();
-                arvore.Existe(new Cidade(idCidadeOrigem));
-                row[i++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
-                arvore.Existe(new Cidade(idCidadeDestino));
-                row[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+                
+                arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
+                rowMelhorCaminho[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
             }
-            dgvMelhorCaminho.Rows.Add(row);
+            dgvMelhorCaminho.Rows.Add(rowMelhorCaminho);
         }
 
 
@@ -370,6 +378,7 @@ namespace apCaminhosMarte
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             Graphics g = pbMapa.CreateGraphics();
+            g.Clear(Color.DimGray);
             SolidBrush meuPincel = new SolidBrush(Color.Black);
             int coluna = 0;
 

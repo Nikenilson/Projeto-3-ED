@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    public class Caminho : IComparable<Caminho>
+    public class Caminho : IComparable<Caminho>, ICloneable
     {
         //Atributos:
         private int idCidadeOrigem;
@@ -54,6 +54,32 @@ namespace apCaminhosMarte
         {
             this.IdCidadeOrigem = idCidadeOrigem;
             this.IdCidadeDestino = idCidadeDestino;
+        }
+        public Caminho(Caminho modelo)
+        {
+            if (modelo == null)
+                throw new Exception("Modelo ausente");
+
+            this.idCidadeOrigem = modelo.idCidadeOrigem;
+            this.idCidadeDestino = modelo.idCidadeDestino;
+            this.distancia = modelo.distancia;
+            this.tempo = modelo.tempo;
+            this.custo = modelo.custo;
+        }
+
+        public Object Clone()
+        {
+            Caminho obj = null;
+
+            try
+            {
+                obj = new Caminho(this);
+            }
+            catch (Exception erro)
+            {
+            }
+
+            return obj;
         }
     }
 }

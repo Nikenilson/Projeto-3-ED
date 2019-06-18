@@ -91,7 +91,7 @@
             this.tpRotas.Controls.Add(this.pbMapa);
             this.tpRotas.Location = new System.Drawing.Point(4, 22);
             this.tpRotas.Name = "tpRotas";
-            this.tpRotas.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tpRotas.Padding = new System.Windows.Forms.Padding(3);
             this.tpRotas.Size = new System.Drawing.Size(1318, 525);
             this.tpRotas.TabIndex = 0;
             this.tpRotas.Text = "Rotas entre cidades";
@@ -121,11 +121,11 @@
             this.dataGridViewTextBoxColumn4,
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewTextBoxColumn6});
-            this.dgvMelhorCaminho.Location = new System.Drawing.Point(1038, 444);
-            this.dgvMelhorCaminho.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvMelhorCaminho.Location = new System.Drawing.Point(1038, 427);
+            this.dgvMelhorCaminho.Margin = new System.Windows.Forms.Padding(2);
             this.dgvMelhorCaminho.Name = "dgvMelhorCaminho";
             this.dgvMelhorCaminho.ReadOnly = true;
-            this.dgvMelhorCaminho.Size = new System.Drawing.Size(269, 73);
+            this.dgvMelhorCaminho.Size = new System.Drawing.Size(269, 90);
             this.dgvMelhorCaminho.TabIndex = 10;
             this.dgvMelhorCaminho.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMelhorCaminho_CellClick);
             // 
@@ -187,9 +187,9 @@
             this.dgvCaminho.Location = new System.Drawing.Point(1038, 238);
             this.dgvCaminho.Name = "dgvCaminho";
             this.dgvCaminho.ReadOnly = true;
-            this.dgvCaminho.Size = new System.Drawing.Size(277, 181);
+            this.dgvCaminho.Size = new System.Drawing.Size(277, 171);
             this.dgvCaminho.TabIndex = 9;
-            this.dgvCaminho.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dgvCaminho.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMelhorCaminho_CellClick);
             // 
             // Column1
             // 
@@ -237,7 +237,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1034, 429);
+            this.label4.Location = new System.Drawing.Point(1035, 412);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(82, 13);
             this.label4.TabIndex = 7;
@@ -330,7 +330,7 @@
             this.tpArvore.Controls.Add(this.pnlArvore);
             this.tpArvore.Location = new System.Drawing.Point(4, 22);
             this.tpArvore.Name = "tpArvore";
-            this.tpArvore.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tpArvore.Padding = new System.Windows.Forms.Padding(3);
             this.tpArvore.Size = new System.Drawing.Size(1318, 525);
             this.tpArvore.TabIndex = 1;
             this.tpArvore.Text = "Árvore de Cidades";
