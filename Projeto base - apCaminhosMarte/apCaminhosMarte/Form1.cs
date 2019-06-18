@@ -44,50 +44,50 @@ namespace apCaminhosMarte
             
             //ha caminho comecou aqui
             bool[] passou = new bool[qtdCidades];
-            int cidade_atual, saida_atual;
+            int cidadeAtual, saidaAtual;
             bool achou = false;
-            cidade_atual = idCidadeOrigem;
-            saida_atual = 0;
+            cidadeAtual = idCidadeOrigem;
+            saidaAtual = 0;
 
             for (int i = 0; i < qtdCidades; i++) // inicia os valores de “passou”    
                 passou[i] = false; // pois ainda não foi em nenhuma cidade  
 
             int indice = 0;
-            while (!achou && !(cidade_atual == idCidadeOrigem && saida_atual == qtdCidades && p.EstaVazia())) //Mudar condicao
+            while (!achou && !(cidadeAtual == idCidadeOrigem && saidaAtual == qtdCidades && p.EstaVazia())) //Mudar condicao
             {
-                while ((saida_atual < qtdCidades) && !achou)
+                while ((saidaAtual < qtdCidades) && !achou)
                 {   // se não há saida pela cidade testada, verifica a próxima      
-                    if (matriz[cidade_atual,saida_atual] == null)
-                        saida_atual++;
+                    if (matriz[cidadeAtual,saidaAtual] == null)
+                        saidaAtual++;
                     else // se já passou pela cidade testada, verifica se a próxima 
                             // cidade permite saida  
-                        if (passou[saida_atual])
-                        saida_atual++;
+                        if (passou[saidaAtual])
+                        saidaAtual++;
                     else     // se chegou na cidade desejada, empilha o local     
                                 // e termina o processo de procura de caminho    
-                    if (saida_atual == idCidadeDestino)
+                    if (saidaAtual == idCidadeDestino)
                     {
-                        p.Empilhar(new Caminho(cidade_atual, saida_atual));
+                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual));
                         achou = true;
                     }
                     else
                     {
-                        p.Empilhar(new Caminho(cidade_atual, saida_atual));
-                        passou[cidade_atual] = true;
+                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual));
+                        passou[cidadeAtual] = true;
                         //System.out.println("Saiu de "+ cidade_atual +           " para "+saida_atual);
-                        cidade_atual = saida_atual;
-                        saida_atual = 0;
+                        cidadeAtual = saidaAtual;
+                        saidaAtual = 0;
                     }
                 }
                 if (!achou)
                     if (!p.EstaVazia())
                     {
                         Caminho aux = p.Desempilhar();
-                        saida_atual = aux.IdCidadeDestino;
-                        cidade_atual = aux.IdCidadeOrigem;
+                        saidaAtual = aux.IdCidadeDestino;
+                        cidadeAtual = aux.IdCidadeOrigem;
                         aux = null;
                         //System.out.println("voltando de "+saida_atual+    " para "+cidade_atual);
-                        saida_atual++;
+                        saidaAtual++;
                     }
             }
             if (achou)
