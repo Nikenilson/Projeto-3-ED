@@ -73,14 +73,11 @@ namespace apCaminhosMarte
 
 
             //Mostra todos os caminhos no dgvCaminhos
-            for(int i = 0; i < caminhosValidos.Length; i++)
+            for(int auxE = 0; auxE < caminhosValidos.Length; auxE++)
             {
-                while(!caminhosValidos[i].EstaVazia())
-                dgvCaminho.Rows[i].Cells[i].Value = caminhosValidos[i].Desempilhar();
+                while(!caminhosValidos[auxE].EstaVazia())
+                dgvCaminho.Rows[auxE].Cells[auxE].Value = caminhosValidos[auxE].Desempilhar();
             }
-
-
-
 
             //Melhor caminho
 
@@ -89,16 +86,16 @@ namespace apCaminhosMarte
             while (!caminhosValidos[0].EstaVazia())
                 menorDistancia = +caminhosValidos[0].Desempilhar().Distancia;
             
-            for (int i = 1; i < caminhosValidos.Length; i++)
+            for (int auxI = 1; auxI < caminhosValidos.Length; auxI++)
             {
                 int distancia = 0;
-                while (!caminhosValidos[i].EstaVazia())
-                    distancia = +caminhosValidos[i].Desempilhar().Distancia;
+                while (!caminhosValidos[auxI].EstaVazia())
+                    distancia = +caminhosValidos[auxI].Desempilhar().Distancia;
 
                 if (distancia < menorDistancia)
                 {
                     menorDistancia = distancia;
-                    indiceMenor = i;
+                    indiceMenor = auxI;
                 }
 
             }
@@ -293,6 +290,11 @@ namespace apCaminhosMarte
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
