@@ -20,33 +20,24 @@ namespace apCaminhosMarte
         ArvoreBinaria<Cidade> arvore;
         Caminho[,] matriz;
         int qtdCidades = 0;
+        List<Caminho> listaCaminhos = new List<Caminho>();
 
         public Form1()
         {
             InitializeComponent();
         }
-
-        private void TxtCaminhos_DoubleClick(object sender, EventArgs e)
-        {
-
-        }
-
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
             int idCidadeOrigem = lsbOrigem.SelectedIndex;
-            int idCidadeAtual = idCidadeOrigem;
             int idCidadeDestino = lsbDestino.SelectedIndex;
-                         
-            List<PilhaLista<Caminho>> caminhosValidos = new List<PilhaLista<Caminho>>();
-            PilhaLista<Caminho> p = new PilhaLista<Caminho>();
-    
-            //ha caminho comecou aqui
+            int cidadeAtual = idCidadeOrigem;
+            int saidaAtual = 0;
             bool[] passou = new bool[qtdCidades];
-            int cidadeAtual, saidaAtual;
             bool achou = false;
             bool acabou = false;
-            cidadeAtual = idCidadeOrigem;
-            saidaAtual = 0;
+
+            List<PilhaLista<Caminho>> caminhosValidos = new List<PilhaLista<Caminho>>();
+            PilhaLista<Caminho> p = new PilhaLista<Caminho>();
 
             for (int i = 0; i < qtdCidades; i++) // inicia os valores de “passou”    
                 passou[i] = false; // pois ainda não foi em nenhuma cidade  
@@ -117,32 +108,19 @@ namespace apCaminhosMarte
 
                 }
             }
-
-
-            //ha caminho acabou aqui
-
             //Mostra todos os caminhos no dgvCaminhos
             TodosOsCaminhos(caminhosValidos, idCidadeOrigem, idCidadeDestino);
-
-            MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
-
-            /*No evento Click do btnBuscar – 
-             * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
-             * exibindo todos os caminhos no dgvCaminhos (um por linha) 
-             * e o melhor caminho no dgvMelhorCaminho. \\Ta la 
-             * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.\\Ta la
-             */
         }
         public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
         {
+            dgvCaminho.Rows.Clear();
             if (caminhosValidos.Count == 0)
-                MessageBox.Show("Nenhum caminho encontrado");
+                MessageBox.Show("Nenhum caminho encontrado!");
             else
             {
                 for (int i = caminhosValidos.Count - 1; i >= 0; i--)
                 {
                     PilhaLista<Caminho> auxiliar = (PilhaLista<Caminho>)caminhosValidos[i].Clone();
-
                     string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
                     int aux = 0;
                     Caminho caminhoAux;
@@ -156,10 +134,12 @@ namespace apCaminhosMarte
                     }
                     dgvCaminho.Rows.Add(row);
                 }
+                MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
             }
         }
         public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
         {
+            dgvMelhorCaminho.Rows.Clear();
             int menorDistancia = 0;
             int indiceMenor = 0;
             List<PilhaLista<Caminho>> aux = new List<PilhaLista<Caminho>>();
@@ -205,10 +185,9 @@ namespace apCaminhosMarte
                 arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
                 rowMelhorCaminho[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
             }
+            
             dgvMelhorCaminho.Rows.Add(rowMelhorCaminho);
         }
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
             //arq 1
@@ -284,18 +263,31 @@ namespace apCaminhosMarte
             */
 
         }
+        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            listaCaminhos.Clear();
+            for (int c = 0; c < (sender as DataGridView).ColumnCount - 1; c += 2)
+            {
+                if ((sender as DataGridView).Rows[e.RowIndex].Cells[c + 1].Value == null
+                    || (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value == null)
+                    break;
+                string linha = (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value.ToString();
+                string linha2 = (sender as DataGridView).Rows[e.RowIndex].Cells[c + 1].Value.ToString();
+                string[] linhaVetor = linha.Split('-');
+                string[] linha2Vetor = linha2.Split('-');
 
+                listaCaminhos.Add(new Caminho(Convert.ToInt32(linhaVetor[0]), Convert.ToInt32(linha2Vetor[0])));
+            }
+        }
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-
-            DesenhaCidades(g, arvore.Raiz);
             DesenhaLinhas(g);
-        }
+            DesenhaCidades(g, arvore.Raiz);
+            DesenhaLinhasCaminho(g);
 
-        private void desenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,
-                            int x, int y, double angulo, double incremento,
-                            double comprimento, Graphics g)
+        }
+        private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,int x, int y, double angulo, double incremento, double comprimento, Graphics g)
         {
             int xf, yf;
             if (raiz != null)
@@ -307,9 +299,9 @@ namespace apCaminhosMarte
                     yf = 25;
                 g.DrawLine(caneta, x, y, xf, yf);
                 // sleep(100);
-                desenhaArvore(false, raiz.Esq, xf, yf, Math.PI / 2 + incremento,
+                DesenhaArvore(false, raiz.Esq, xf, yf, Math.PI / 2 + incremento,
                                                     incremento * 0.60, comprimento * 0.8, g);
-                desenhaArvore(false, raiz.Dir, xf, yf, Math.PI / 2 - incremento,
+                DesenhaArvore(false, raiz.Dir, xf, yf, Math.PI / 2 - incremento,
                                                     incremento * 0.60, comprimento * 0.8, g);
                 // sleep(100);
                 SolidBrush preenchimento = new SolidBrush(Color.Yellow);
@@ -318,7 +310,6 @@ namespace apCaminhosMarte
                                 new SolidBrush(Color.Black), xf - 15, yf - 10);
             }
         }
-
         private void DesenhaLinhas(Graphics g)
         {
             Caminho aux = null;
@@ -345,6 +336,29 @@ namespace apCaminhosMarte
                     }
                 }
         }
+        private void DesenhaLinhasCaminho(Graphics g)
+        {
+            Pen minhaCaneta = new Pen(Color.Black, 20);
+            SolidBrush meuPincel = new SolidBrush(Color.Black);
+            if (listaCaminhos != null)
+            { 
+                for(int i = 0; i < listaCaminhos.Count;i++)
+                {
+                    Caminho aux = listaCaminhos[i];
+                    Cidade c1 = arvore.BuscarDado(new Cidade(aux.IdCidadeOrigem));
+                    Cidade c2 = arvore.BuscarDado(new Cidade(aux.IdCidadeDestino));
+                    float xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
+                    float yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
+                    float xF = pbMapa.Size.Width * c2.CoordenadaX / 4096;
+                    float yF = pbMapa.Size.Height * c2.CoordenadaY / 2048;
+                    g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, xI - 5, yI + 15);
+                    g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, xF - 5, yF + 15);
+                    //Onde I => Inicio, F => Fim
+
+                    g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+                }    
+            }
+        }
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
             if (atualRecursivo != null)
@@ -363,43 +377,14 @@ namespace apCaminhosMarte
         {
             pbMapa.Invalidate();
         }
-
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            desenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
+            DesenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
         }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            Graphics g = pbMapa.CreateGraphics();
-            g.Clear(Color.DimGray);
-            SolidBrush meuPincel = new SolidBrush(Color.Black);
-            int coluna = 0;
-
-            for (int c = 0; c < (sender as DataGridView).ColumnCount; c++)
-            {
-                string linha = (sender as DataGridView).Rows[e.RowIndex].Cells[coluna].Value.ToString();
-                if (linha == null || linha == "")
-                    break;
-                string[] linhaVetor = linha.Split('-');
-                arvore.Existe(new Cidade(Convert.ToInt32(linhaVetor[0])));
-                float x = pbMapa.Size.Width * arvore.Atual.Info.CoordenadaX / 4096 - 8;
-                float y = pbMapa.Size.Height * arvore.Atual.Info.CoordenadaY / 2048 - 8;
-                g.FillEllipse(meuPincel, x, y, 16, 16);
-                g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5, y + 15);
-
-            }
-        }
+        
     }
 }
-
-
 /*
 
 Roteiro de utilização
@@ -413,9 +398,9 @@ proporção entre coordenadas das cidades referentes ao tamanho original (4096x2
 dimensões atuais do picturebox.// tA lA
 
 -No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
-lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) 
+lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) // tA lA
 
--O melhor caminho no dgvMelhorCaminho. 
+-O melhor caminho no dgvMelhorCaminho. // tA lA
 
 -Usar retas para ligar as cidades no mapa referente ao caminho
 da linha selecionada no dgvCaminhos.
@@ -423,36 +408,3 @@ da linha selecionada no dgvCaminhos.
 -Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.// tA lA
 
 */
-
-/*
-    int aux = 0;
-    bool acabou = false;
-    bool regressivo = false;
-
-    Caminho caminhoAtual = null;
-    PilhaLista<Caminho>[] possibilidades = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
-
-    var caminhos = new PilhaLista<Caminho>();
-    var possibilidades2 = new PilhaLista<Caminho>();
-
-    do
-    {
-        for (int colunas = 0; colunas < qtdCidades; colunas++)
-        {
-            if (matriz[idCidadeAtual, colunas] != null && idCidadeAtual == matriz[idCidadeAtual, colunas].IdCidadeOrigem)
-                caminhos.Empilhar(matriz[idCidadeAtual, colunas]);
-        }
-        possibilidades[aux] = caminhos;
-
-        if (possibilidades[aux].EstaVazia())
-            regressivo = true;
-        else
-        {
-            caminhoAtual = possibilidades[aux].Desempilhar();
-            idCidadeAtual = caminhoAtual.IdCidadeDestino;
-        }
-            aux++;
-
-    } while (!acabou);
-        */
-
