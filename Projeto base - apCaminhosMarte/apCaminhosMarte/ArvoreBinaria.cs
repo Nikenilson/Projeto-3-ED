@@ -67,6 +67,12 @@ namespace apCaminhosMarte
                 quantosNos++;
             }
         }
+        public Dado BuscarDado(Dado T)
+        {
+            if (Existe(T))
+                return atual.Info;
+            return default(Dado);
+        }
 
     }
 }
