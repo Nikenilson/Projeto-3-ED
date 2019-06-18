@@ -33,7 +33,8 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            int idCidadeAtual = lsbOrigem.SelectedIndex;
+            int idCidadeOrigem = lsbOrigem.SelectedIndex;
+            int idCidadeAtual = idCidadeOrigem;
             int idCidadeDestino = lsbDestino.SelectedIndex;
 
             int aux = 0;
@@ -83,6 +84,58 @@ namespace apCaminhosMarte
 
 
             //Melhor caminho
+
+            int menorDistancia = 0;
+            int indiceMenor = 0;
+            while (!caminhosValidos[0].EstaVazia())
+                menorDistancia = +caminhosValidos[0].Desempilhar().Distancia;
+            
+            for (int i = 1; i < caminhosValidos.Length; i++)
+            {
+                int distancia = 0;
+                while (!caminhosValidos[i].EstaVazia())
+                    distancia = +caminhosValidos[i].Desempilhar().Distancia;
+
+                if (distancia < menorDistancia)
+                {
+                    menorDistancia = distancia;
+                    indiceMenor = i;
+                }
+
+            }
+
+            PilhaLista<Caminho> melhorCaminho = caminhosValidos[indiceMenor];
+
+            string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
+            int i = 0;
+            Caminho caminhoAux;
+            while(!melhorCaminho.EstaVazia())
+            {
+                caminhoAux = melhorCaminho.Desempilhar();
+                arvore.Existe(new Cidade(idCidadeOrigem));
+                row[i++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
+                arvore.Existe(new Cidade(idCidadeDestino));
+                row[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+            }
+            dgvMelhorCaminho.Rows.Add(row);
+
+            /*int melhor = 0;
+            int distancia = 0;
+            bool primeiroLoopDoPercurso = true;
+            for (int i = 0; i < caminhosValidos.Length; i++)
+            {
+                while(!caminhosValidos[i].EstaVazia())
+                    distancia =+ caminhosValidos[i].Desempilhar().Distancia;
+
+                if (primeiroLoopDoPercurso)
+                {
+                    melhor = distancia;
+                    primeiroLoopDoPercurso = false;
+                }
+
+                if (distancia < melhor)
+                    melhor = distancia;
+            }*/
 
 
 

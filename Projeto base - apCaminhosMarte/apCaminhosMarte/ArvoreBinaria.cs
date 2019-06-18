@@ -51,10 +51,6 @@ namespace apCaminhosMarte
             return false; // Se atual == null, a chave não existe mas antecessor aponta o pai 
         }
 
-        
-
-
-
         public void Incluir(Dado incluido)    // inclusão usando o método de pesquisa binária
         {
             if (Existe(incluido))
@@ -72,54 +68,6 @@ namespace apCaminhosMarte
             }
         }
 
-        /*
-         
-            MÉTODO COMENTADO TEMPORÁRIO PARA USO INTERNO, SENHOR SAMUEL.
-         
-        public boolean excluiNo(T excluido)
-        {
-            if (!existe(excluido))
-            return false;
-            else
-            {
-            // antecessor e atual foram definidos em existe()
-            if (atual.getDir() == null) // nó a excluir tem 0 ou 1 filho?
-            liga(antecessor, excluido, atual.getEsq());
-            else
-            if (atual.getEsq() == null)
-            liga(antecessor, excluido, atual.getDir());
-            else
-            {
-            // nó a excluir tem 2 filhos
-            antecessor = atual;
-            NoArvore2<T> aux = atual.getEsq();
-            while (aux.getDir() != null) // procura maior dos menores filhos
-            {
-            antecessor = aux;
-            aux = aux.getDir();
-            }
-            atual.setElemento(aux.getElemento()); // troca conteúdo
-            antecessor.setDir(aux.getEsq());
-            aux = null;
-            }
-            this.setTamanho(this.getTamanho()-1);
-            return true;
-            }
-            }
-         */
-
-        public void RemoverDado(Dado T)
-        {
-            if (!Existe(T))
-                throw new Exception("Dado inexistente");
-
-        }
-        public Dado BuscarDado(Dado T)
-        {
-            if (Existe(T))
-                return atual.Info;
-            return default(Dado);
-        }
     }
 }
 
