@@ -33,147 +33,46 @@ namespace apCaminhosMarte
 
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            /* int idCidadeOrigem = lsbOrigem.SelectedIndex;
-             int idCidadeAtual = idCidadeOrigem;
-             int idCidadeDestino = lsbDestino.SelectedIndex;
+            int idCidadeOrigem = lsbOrigem.SelectedIndex;
+            int idCidadeAtual = idCidadeOrigem;
+            int idCidadeDestino = lsbDestino.SelectedIndex;
+                         
+            PilhaLista<Caminho>[] caminhosValidos = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))]; //muda depois
+            PilhaLista<Caminho> p = new PilhaLista<Caminho>();
 
-             int aux = 0;
-             bool acabou = false;
-             bool regressivo = false;
-
-             Caminho caminhoAtual = null;
-             PilhaLista<Caminho>[] caminhosValidos = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))]; //muda depois
-
-             PilhaLista<Caminho>[] possibilidades = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
-
-             var caminhos = new PilhaLista<Caminho>();
-             var possibilidades2 = new PilhaLista<Caminho>();
-
-             do
-             {
-                 for (int colunas = 0; colunas < qtdCidades; colunas++)
-                 {
-                     if (matriz[idCidadeAtual, colunas] != null && idCidadeAtual == matriz[idCidadeAtual, colunas].IdCidadeOrigem)
-                         caminhos.Empilhar(matriz[idCidadeAtual, colunas]);
-                 }
-                 possibilidades[aux] = caminhos;
-
-                 if (possibilidades[aux].EstaVazia())
-                     regressivo = true;
-                 else
-                 {
-                     caminhoAtual = possibilidades[aux].Desempilhar();
-                     idCidadeAtual = caminhoAtual.IdCidadeDestino;
-                 }
-                     aux++;
-
-             } while (!acabou);
-
-             //Mostra todos os caminhos no dgvCaminhos
-             for(int auxE = 0; auxE < caminhosValidos.Length; auxE++)
-             {
-                 while(!caminhosValidos[auxE].EstaVazia())
-                 dgvCaminho.Rows[auxE].Cells[auxE].Value = caminhosValidos[auxE].Desempilhar();
-             }
-
-             //Melhor caminho
-
-             int menorDistancia = 0;
-             int indiceMenor = 0;
-             while (!caminhosValidos[0].EstaVazia())
-                 menorDistancia = +caminhosValidos[0].Desempilhar().Distancia;
-
-             for (int auxI = 1; auxI < caminhosValidos.Length; auxI++)
-             {
-                 int distancia = 0;
-                 while (!caminhosValidos[auxI].EstaVazia())
-                     distancia = +caminhosValidos[auxI].Desempilhar().Distancia;
-
-                 if (distancia < menorDistancia)
-                 {
-                     menorDistancia = distancia;
-                     indiceMenor = auxI;
-                 }
-
-             }
-
-             PilhaLista<Caminho> melhorCaminho = caminhosValidos[indiceMenor];
-
-             string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
-             int i = 0;
-             Caminho caminhoAux;
-             while(!melhorCaminho.EstaVazia())
-             {
-                 caminhoAux = melhorCaminho.Desempilhar();
-                 arvore.Existe(new Cidade(idCidadeOrigem));
-                 row[i++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
-                 arvore.Existe(new Cidade(idCidadeDestino));
-                 row[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
-             }
-             dgvMelhorCaminho.Rows.Add(row);
-             */
-            /*int melhor = 0;
-            int distancia = 0;
-            bool primeiroLoopDoPercurso = true;
-            for (int i = 0; i < caminhosValidos.Length; i++)
-            {
-                while(!caminhosValidos[i].EstaVazia())
-                    distancia =+ caminhosValidos[i].Desempilhar().Distancia;
-
-                if (primeiroLoopDoPercurso)
-                {
-                    melhor = distancia;
-                    primeiroLoopDoPercurso = false;
-                }
-
-                if (distancia < melhor)
-                    melhor = distancia;
-            }*/
-
-
-
-
-            /*No evento Click do btnBuscar – 
-             * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
-             * exibindo todos os caminhos no dgvCaminhos (um por linha) 
-             * e o melhor caminho no dgvMelhorCaminho. 
-             * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.*/
-        }
-        public static bool haCaminho(int[][] cam, int origem, int destino, int lin, int col, PilhaVetor saida)
-        {
-            bool[] passou = new bool[col];
+            
+            
+            //ha caminho comecou aqui
+            bool[] passou = new bool[qtdCidades];
             int cidade_atual, saida_atual;
             bool achou = false;
-            cidade_atual = origem;
+            cidade_atual = idCidadeOrigem;
             saida_atual = 0;
 
-            for (int i = 0; i < col; i++) // inicia os valores de “passou”    
+            for (int i = 0; i < qtdCidades; i++) // inicia os valores de “passou”    
                 passou[i] = false; // pois ainda não foi em nenhuma cidade  
 
-            while (!achou && !(cidade_atual == origem && saida_atual == col && p.estaVazia()))
+            int indice = 0;
+            while (!achou && !(cidade_atual == idCidadeOrigem && saida_atual == qtdCidades && p.EstaVazia())) //Mudar condicao
             {
-                while ((saida_atual < col) && !achou)
+                while ((saida_atual < qtdCidades) && !achou)
                 {   // se não há saida pela cidade testada, verifica a próxima      
-                    if (cam[cidade_atual][saida_atual] == 0)
+                    if (matriz[cidade_atual,saida_atual] == null)
                         saida_atual++;
                     else // se já passou pela cidade testada, verifica se a próxima 
-                         // cidade permite saida  
+                            // cidade permite saida  
                         if (passou[saida_atual])
                         saida_atual++;
                     else     // se chegou na cidade desejada, empilha o local     
-                             // e termina o processo de procura de caminho    
-                        if (saida_atual == destino)
+                                // e termina o processo de procura de caminho    
+                    if (saida_atual == idCidadeDestino)
                     {
-                        Caminho movim = new Caminho();
-                        movim.setValores(cidade_atual, saida_atual);
-                        p.empilhar(movim);
+                        p.Empilhar(new Caminho(cidade_atual, saida_atual));
                         achou = true;
                     }
                     else
                     {
-                        Caminho movim = new Caminho();
-                        movim.setValores(cidade_atual, saida_atual);
-                        p.empilhar(movim);
+                        p.Empilhar(new Caminho(cidade_atual, saida_atual));
                         passou[cidade_atual] = true;
                         //System.out.println("Saiu de "+ cidade_atual +           " para "+saida_atual);
                         cidade_atual = saida_atual;
@@ -181,26 +80,109 @@ namespace apCaminhosMarte
                     }
                 }
                 if (!achou)
-                    if (!p.estaVazia())
+                    if (!p.EstaVazia())
                     {
-                        Caminho movim = (Caminho)p.desempilhar();
-                        saida_atual = movim.getSaida();
-                        cidade_atual = movim.getCidade();
-                        movim = null;
+                        Caminho aux = p.Desempilhar();
+                        saida_atual = aux.IdCidadeDestino;
+                        cidade_atual = aux.IdCidadeOrigem;
+                        aux = null;
                         //System.out.println("voltando de "+saida_atual+    " para "+cidade_atual);
                         saida_atual++;
                     }
             }
             if (achou)
             {  // desempilha a configuração atual da pilha      
-               // para a pilha da lista de parâmetros   
-                while (!p.estaVazia())
+                // para a pilha da lista de parâmetros   
+                while (!p.EstaVazia())
                 {
-                    Movimento movim = (Movimento)p.desempilhar();
-                    saida.empilhar(movim);
+                    caminhosValidos[indice].Empilhar(p.Desempilhar());
                 }
             }
-            return achou;
+        
+            //ha caminho acabou aqui
+
+            //Mostra todos os caminhos no dgvCaminhos
+            TodosOsCaminhos(caminhosValidos, idCidadeOrigem, idCidadeDestino);
+
+            //Melhor caminho
+            MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
+
+            /*No evento Click do btnBuscar – 
+             * procurar os caminhos entre as cidades selecionadas no lsbOrigem e lsbDestino, 
+             * exibindo todos os caminhos no dgvCaminhos (um por linha) 
+             * e o melhor caminho no dgvMelhorCaminho. \\Ta la 
+             * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.\\Ta la
+             */
+        }
+        public void TodosOsCaminhos(PilhaLista<Caminho>[] caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
+        {
+            for (int i = 0; i < caminhosValidos.Length; i++)
+            {
+                PilhaLista<Caminho> auxiliar = caminhosValidos[i];
+
+                string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
+                int aux = 0;
+                Caminho caminhoAux;
+                while (!auxiliar.EstaVazia())
+                {
+                    caminhoAux = auxiliar.Desempilhar();
+                    arvore.Existe(new Cidade(idCidadeOrigem));
+                    row[aux++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
+                    arvore.Existe(new Cidade(idCidadeDestino));
+                    row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+                }
+                dgvCaminho.Rows.Add(row);
+            }
+        }
+        public void MenorCaminho(PilhaLista<Caminho>[] caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
+        {
+            int menorDistancia = 0;
+            int indiceMenor = 0;
+            PilhaLista<Caminho>[] aux = new PilhaLista<Caminho>[caminhosValidos.Length];
+            while (!caminhosValidos[0].EstaVazia())
+            {
+                aux[0] = caminhosValidos[0];//.Clone();
+                menorDistancia =+ caminhosValidos[0].Desempilhar().Distancia;
+            }
+          
+            for (int auxI = 1; auxI < caminhosValidos.Length; auxI++)
+            {
+                aux[auxI] = caminhosValidos[0];//.Clone();
+                int distancia = 0;
+                while (!caminhosValidos[auxI].EstaVazia())
+                    distancia =+ caminhosValidos[auxI].Desempilhar().Distancia;
+
+                if (distancia < menorDistancia)
+                {
+                    menorDistancia = distancia;
+                    indiceMenor = auxI;
+                }
+            }
+
+            for (int auxI = 0; auxI < caminhosValidos.Length; auxI++)
+            {
+                caminhosValidos[auxI] = aux[auxI];
+            }
+
+            PilhaLista<Caminho> melhorCaminho = caminhosValidos[indiceMenor];
+
+            string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
+            int i = 0;
+            Caminho caminhoAux;
+            while (!melhorCaminho.EstaVazia())
+            {
+                caminhoAux = melhorCaminho.Desempilhar();
+                arvore.Existe(new Cidade(idCidadeOrigem));
+                row[i++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
+                arvore.Existe(new Cidade(idCidadeDestino));
+                row[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
+            }
+            dgvMelhorCaminho.Rows.Add(row);
+        }
+
+        public static bool haCaminho(int[][] cam, int origem, int destino, int lin, int col, PilhaLista<Caminho> saida)
+        {
+            
         }
 
 
@@ -402,4 +384,36 @@ da linha selecionada no dgvCaminhos.
 -Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.// tA lA
 
 */
+
+/*
+    int aux = 0;
+    bool acabou = false;
+    bool regressivo = false;
+
+    Caminho caminhoAtual = null;
+    PilhaLista<Caminho>[] possibilidades = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))];
+
+    var caminhos = new PilhaLista<Caminho>();
+    var possibilidades2 = new PilhaLista<Caminho>();
+
+    do
+    {
+        for (int colunas = 0; colunas < qtdCidades; colunas++)
+        {
+            if (matriz[idCidadeAtual, colunas] != null && idCidadeAtual == matriz[idCidadeAtual, colunas].IdCidadeOrigem)
+                caminhos.Empilhar(matriz[idCidadeAtual, colunas]);
+        }
+        possibilidades[aux] = caminhos;
+
+        if (possibilidades[aux].EstaVazia())
+            regressivo = true;
+        else
+        {
+            caminhoAtual = possibilidades[aux].Desempilhar();
+            idCidadeAtual = caminhoAtual.IdCidadeDestino;
+        }
+            aux++;
+
+    } while (!acabou);
+        */
 

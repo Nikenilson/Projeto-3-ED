@@ -49,5 +49,11 @@ namespace apCaminhosMarte
         {
             return this.distancia - caminho.distancia;
         }
+
+        public Caminho(int idCidadeOrigem, int idCidadeDestino)
+        {
+            this.IdCidadeOrigem = idCidadeOrigem;
+            this.IdCidadeDestino = idCidadeDestino;
+        }
     }
 }
