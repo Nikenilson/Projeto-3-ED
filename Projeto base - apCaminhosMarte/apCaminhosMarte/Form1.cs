@@ -75,8 +75,7 @@ namespace apCaminhosMarte
             for(int i = 0; i < caminhosValidos.Length; i++)
             {
                 while(!caminhosValidos[i].EstaVazia())
-                dvgCaminhos. = caminhosValidos[i].Desempilhar();
-                
+                dgvCaminho.Rows[i].Cells[i].Value = caminhosValidos[i].Desempilhar();
             }
 
 
@@ -93,7 +92,7 @@ namespace apCaminhosMarte
              * e o melhor caminho no dgvMelhorCaminho. 
              * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.*/
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
            
@@ -238,6 +237,11 @@ namespace apCaminhosMarte
         {
             Graphics g = e.Graphics;
             desenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
