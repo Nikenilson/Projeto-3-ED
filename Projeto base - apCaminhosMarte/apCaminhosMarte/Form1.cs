@@ -37,15 +37,14 @@ namespace apCaminhosMarte
             int idCidadeAtual = idCidadeOrigem;
             int idCidadeDestino = lsbDestino.SelectedIndex;
                          
-            PilhaLista<Caminho>[] caminhosValidos = new PilhaLista<Caminho>[Convert.ToInt32(Math.Pow(qtdCidades, 2))]; //muda depois
+            List<PilhaLista<Caminho>> caminhosValidos = new List<PilhaLista<Caminho>>();
             PilhaLista<Caminho> p = new PilhaLista<Caminho>();
-
-            
-            
+    
             //ha caminho comecou aqui
             bool[] passou = new bool[qtdCidades];
             int cidadeAtual, saidaAtual;
             bool achou = false;
+            bool acabou = false;
             cidadeAtual = idCidadeOrigem;
             saidaAtual = 0;
 
@@ -53,7 +52,7 @@ namespace apCaminhosMarte
                 passou[i] = false; // pois ainda não foi em nenhuma cidade  
 
             int indice = 0;
-            while (!achou && !(cidadeAtual == idCidadeOrigem && saidaAtual == qtdCidades && p.EstaVazia())) //Mudar condicao
+            while (!acabou) //Mudar condicao
             {
                 while ((saidaAtual < qtdCidades) && !achou)
                 {   // se não há saida pela cidade testada, verifica a próxima      
@@ -74,7 +73,6 @@ namespace apCaminhosMarte
                     {
                         p.Empilhar(new Caminho(cidadeAtual, saidaAtual));
                         passou[cidadeAtual] = true;
-                        //System.out.println("Saiu de "+ cidade_atual +           " para "+saida_atual);
                         cidadeAtual = saidaAtual;
                         saidaAtual = 0;
                     }
@@ -82,22 +80,44 @@ namespace apCaminhosMarte
                 if (!achou)
                     if (!p.EstaVazia())
                     {
+                        //Backtracking
                         Caminho aux = p.Desempilhar();
                         saidaAtual = aux.IdCidadeDestino;
+                        passou[saidaAtual] = false;
                         cidadeAtual = aux.IdCidadeOrigem;
                         aux = null;
-                        //System.out.println("voltando de "+saida_atual+    " para "+cidade_atual);
                         saidaAtual++;
                     }
-            }
-            if (achou)
-            {  // desempilha a configuração atual da pilha      
-                // para a pilha da lista de parâmetros   
-                while (!p.EstaVazia())
-                {
-                    caminhosValidos[indice].Empilhar(p.Desempilhar());
+                    else
+                        acabou = true;
+                if (achou)
+                {  // desempilha a configuração atual da pilha      
+                   // para a pilha da lista de parâmetros  
+
+                    caminhosValidos.Add(new PilhaLista<Caminho>());
+                    PilhaLista<Caminho> auxiliar = new PilhaLista<Caminho>();
+                    while (!p.EstaVazia())
+                    {
+                        auxiliar.Empilhar(p.Desempilhar());
+                        caminhosValidos[indice].Empilhar(auxiliar.OTopo());
+                    }
+                    while(!auxiliar.EstaVazia())
+                    {
+                        p.Empilhar(auxiliar.Desempilhar());
+                    }
+                    indice++;
+                    achou = false;
+                    //Backtracking
+                    Caminho aux = p.Desempilhar();
+                    saidaAtual = aux.IdCidadeDestino;
+                    passou[saidaAtual] = false;
+                    cidadeAtual = aux.IdCidadeOrigem;
+                    aux = null;
+                    saidaAtual++;
+
                 }
             }
+            
         
             //ha caminho acabou aqui
 
@@ -114,40 +134,40 @@ namespace apCaminhosMarte
              * Usar retas para ligar as cidades no mapa referente ao caminho da linha selecionada no dgvCaminhos.\\Ta la
              */
         }
-        public void TodosOsCaminhos(PilhaLista<Caminho>[] caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
+        public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
         {
-            for (int i = 0; i < caminhosValidos.Length; i++)
+            for (int i = caminhosValidos.Count- 1; i >= 0; i--) 
             {
                 PilhaLista<Caminho> auxiliar = caminhosValidos[i];
 
                 string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
                 int aux = 0;
                 Caminho caminhoAux;
+                arvore.Existe(new Cidade(idCidadeOrigem));
+                row[aux++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
                 while (!auxiliar.EstaVazia())
                 {
-                    caminhoAux = auxiliar.Desempilhar();
-                    arvore.Existe(new Cidade(idCidadeOrigem));
-                    row[aux++] = caminhoAux.IdCidadeOrigem + " - " + arvore.Atual.Info.Nome;
-                    arvore.Existe(new Cidade(idCidadeDestino));
+                    caminhoAux = auxiliar.Desempilhar(); 
+                    arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
                     row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
                 }
                 dgvCaminho.Rows.Add(row);
             }
         }
-        public void MenorCaminho(PilhaLista<Caminho>[] caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
+        public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
         {
             int menorDistancia = 0;
             int indiceMenor = 0;
-            PilhaLista<Caminho>[] aux = new PilhaLista<Caminho>[caminhosValidos.Length];
+            List<PilhaLista<Caminho>> aux = new List<PilhaLista<Caminho>>();
             while (!caminhosValidos[0].EstaVazia())
             {
-                aux[0] = caminhosValidos[0];//.Clone();
+                aux.Add(caminhosValidos[0]);//.Clone();
                 menorDistancia =+ caminhosValidos[0].Desempilhar().Distancia;
             }
           
-            for (int auxI = 1; auxI < caminhosValidos.Length; auxI++)
+            for (int auxI = 1; auxI < caminhosValidos.Count; auxI++)
             {
-                aux[auxI] = caminhosValidos[0];//.Clone();
+                aux.Add(caminhosValidos[auxI]);//.Clone();
                 int distancia = 0;
                 while (!caminhosValidos[auxI].EstaVazia())
                     distancia =+ caminhosValidos[auxI].Desempilhar().Distancia;
@@ -159,9 +179,9 @@ namespace apCaminhosMarte
                 }
             }
 
-            for (int auxI = 0; auxI < caminhosValidos.Length; auxI++)
+            for (int auxI = 0; auxI < aux.Count; auxI++)
             {
-                caminhosValidos[auxI] = aux[auxI];
+                caminhosValidos.Add(aux[auxI]);
             }
 
             PilhaLista<Caminho> melhorCaminho = caminhosValidos[indiceMenor];
@@ -180,15 +200,10 @@ namespace apCaminhosMarte
             dgvMelhorCaminho.Rows.Add(row);
         }
 
-        public static bool haCaminho(int[][] cam, int origem, int destino, int lin, int col, PilhaLista<Caminho> saida)
-        {
-            
-        }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            //arq 1
             var arq = new StreamReader("CidadesMarte.txt");
             arvore = new ArvoreBinaria<Cidade>();
 
@@ -201,6 +216,7 @@ namespace apCaminhosMarte
             }
             arq.Close();
 
+            //arq2
             var arq2 = new StreamReader("CaminhosEntreCidadesMarte.txt");
             matriz = new Caminho[qtdCidades, qtdCidades];
             string linha2 = null;
@@ -210,6 +226,20 @@ namespace apCaminhosMarte
                 matriz[int.Parse(linha2.Substring(0, 3)), int.Parse(linha2.Substring(3, 3))] = new Caminho(linha2);
             }
             arq2.Close();
+
+            //arq3
+            var arq3 = new StreamReader("CidadesMarteOrdenado.txt");
+            lsbOrigem.Items.Clear();
+            lsbDestino.Items.Clear();
+
+            string linha3 = null;
+            while (!arq3.EndOfStream)
+            {
+                linha3 = arq3.ReadLine();
+                lsbOrigem.Items.Add(linha3.Substring(0, 3) + " - " + linha3.Substring(3, 15));
+                lsbDestino.Items.Add(linha3.Substring(0, 3) + " - " + linha3.Substring(3, 15));
+            }
+            arq3.Close();
 
             /*
             MessageBox.Show("Selecione o arquivo CidadesMarte.txt");
