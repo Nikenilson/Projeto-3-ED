@@ -382,7 +382,11 @@ namespace apCaminhosMarte
             Graphics g = e.Graphics;
             DesenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
         }
-        
+
+        void dgvCaminho_OnRowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            MessageBox.Show("Clicked RowHeader!");
+        }
     }
 }
 /*
