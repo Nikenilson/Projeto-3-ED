@@ -26,8 +26,6 @@ namespace apCaminhosMarte
         {
             InitializeComponent();
         }
-
-
         //Método que, efetivamente, busca caminhos entre as cidades do mapa.
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
@@ -39,8 +37,6 @@ namespace apCaminhosMarte
             bool[] passou = new bool[qtdCidades];
             bool achou = false;
             bool acabou = false;
-
-
             List<PilhaLista<Caminho>> caminhosValidos = new List<PilhaLista<Caminho>>();
             PilhaLista<Caminho> p = new PilhaLista<Caminho>();
 
@@ -48,7 +44,7 @@ namespace apCaminhosMarte
                 passou[i] = false; //Pois ainda não foi em nenhuma cidade  
 
             int indice = 0;
-            while (!acabou) 
+            while (!acabou) //Enquanto não acabou
             {
                 while ((saidaAtual < qtdCidades) && !achou)
                 {   //Se não há saida pela cidade testada, verifica a próxima.    
@@ -115,56 +111,71 @@ namespace apCaminhosMarte
             //Método que mostra todos os caminhos no dgvCaminho.
             TodosOsCaminhos(caminhosValidos, idCidadeOrigem, idCidadeDestino);
         }
+        //Exibe todos os caminhos validos no dgv
         public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
         {
+            //Limpa o DataGridView
             dgvCaminho.Rows.Clear();
-            dgvCaminho.ColumnCount = 23; //Numero maximo e cidades
+            dgvCaminho.ColumnCount = 23; //Número máximo de cidades
+
+            //Se não ha caminhos válidos, avisa ao usuário 
             if (caminhosValidos.Count == 0)
                 MessageBox.Show("Nenhum caminho encontrado!");
             else
             {
+                //Percorre os caminhosValidos
                 for (int i = caminhosValidos.Count - 1; i >= 0; i--)
                 {
-                    //Pilha de clone da pilha de caminhos válidos para evitar transtornos no código.
+                    //Clonamos a pilha e à armazenamos em uma variavel auxiliar, pois ele será usada no futuro.
                     PilhaLista<Caminho> auxiliar = (PilhaLista<Caminho>)caminhosValidos[i].Clone();
+                    Caminho caminhoAux;
                     string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
                     int aux = 0;
-                    Caminho caminhoAux;
+                    
+                    //Utiliza o método Existe para posicionar o atual da arvore
                     arvore.Existe(new Cidade(idCidadeOrigem));
                     row[aux++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
                     while (!auxiliar.EstaVazia())
                     {
+                        //Até que a pilha auxiliar se esvazie, adiciona os caminhos no DataGridView
                         caminhoAux = auxiliar.Desempilhar();
                         arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
                         row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
                     }
                     dgvCaminho.Rows.Add(row);
                 }
+                //Após a exibição dos caminhos no dgvCaminhos, chama o método MenorCaminho para exibir o Melhor Caminho  
                 MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
             }
         }
-
-        //Método que encontra o menor caminho.
+        //Método que encontra o menor/melhor caminho.
         public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
         {
+            //Limpa o DataGridView
             dgvMelhorCaminho.Rows.Clear();
             dgvMelhorCaminho.ColumnCount = 23;//Numero maximo e cidades
             int menorDistancia = 0;
             int indiceMenor = 0;
             List<PilhaLista<Caminho>> aux = new List<PilhaLista<Caminho>>();
+
+            //Pega a soma das distancias dos caminhos da primeira pilha pra futuramente compará-la com as outras 
             while (!caminhosValidos[0].EstaVazia())
             {
+                //Adiciona um clone do Caminho atual em uma variavel auxiliar para recuperar ele depois
                 aux.Add((PilhaLista<Caminho>) caminhosValidos[0].Clone());
                 menorDistancia =+ caminhosValidos[0].Desempilhar().Distancia;
             }
-          
+            
+            //Percorre os caminhos válidos comparando as distancias a dim de achar a menor delas
             for (int auxI = 1; auxI < caminhosValidos.Count; auxI++)
             {
+                //Adiciona um clone do Caminho atual em uma variavel auxiliar para recuperar ele depois
                 aux.Add((PilhaLista<Caminho>) caminhosValidos[auxI].Clone());
                 int distancia = 0;
                 while (!caminhosValidos[auxI].EstaVazia())
                     distancia =+ caminhosValidos[auxI].Desempilhar().Distancia;
 
+                //Se a distancia desse caminho for menor que a menor das distancias, essa se torna a menor distancias
                 if (distancia < menorDistancia)
                 {
                     menorDistancia = distancia;
@@ -172,6 +183,7 @@ namespace apCaminhosMarte
                 }
             }
 
+            //Repreenche a lista de caminhos, para que possamos indexar o indice de menor distancia
             for (int auxI = 0; auxI < aux.Count; auxI++)
             {
                 caminhosValidos.Clear();
@@ -184,9 +196,11 @@ namespace apCaminhosMarte
             int i = 0;
             Caminho caminhoAux;
 
+            //Utiliza o método Existe para posicionar o atual da arvore
             arvore.Existe(new Cidade(idCidadeOrigem));
             rowMelhorCaminho[i++] = idCidadeOrigem + " - " + arvore.Atual.Info.Nome;
 
+            //Até que o caminho se esvazie, adiciona os caminhos no DataGridView
             while (!melhorCaminho.EstaVazia())
             {
                 caminhoAux = melhorCaminho.Desempilhar();
@@ -194,7 +208,7 @@ namespace apCaminhosMarte
                 arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
                 rowMelhorCaminho[i++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
             }
-            
+            //Adiciona os caminhos no DataGriedView
             dgvMelhorCaminho.Rows.Add(rowMelhorCaminho);
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -243,19 +257,24 @@ namespace apCaminhosMarte
         //Método para escrever os caminhos do mapa deduzidos em uma notação de DataGridView.
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            //Limpa a lista de cidades antes selecionadas
             listaCidades.Clear();
             for (int c = 0; c < (sender as DataGridView).ColumnCount; c++)
             {
+                //Verifica se o click foi em uma celula válida
                 if (e.RowIndex < 0 || (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value == null)
                     break;
+
+                //Pega o código da cidade na celula em que o usuário clickou 
                 string linha = (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value.ToString();
                 string[] linhaVetor = linha.Split('-');
 
+                //Adiciona a cidade a ser desenhada na lista de cidades, para que o método DesenhaLinhasCaminho possa 
+                //desenhar o caminho quando o usuario clicar em um caminho
                 listaCidades.Add(new Cidade(Convert.ToInt32(linhaVetor[0])));
             }
             pbMapa.Invalidate(); //Invalida um desenho para que possa ser feito outro.
         }
-
         //Método que pinta o mapa na tela do formulário.
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
@@ -264,10 +283,8 @@ namespace apCaminhosMarte
             DesenhaCidades(g, arvore.Raiz);
             DesenhaLinhas(g);
             DesenhaLinhasCaminho(g);
-
         }
-
-        //Desenhando a árvore binária na segunda tabpage do formulário.
+        //Desenha a árvore binária na segunda tabpage do formulário.
         private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,int x, int y, double angulo, double incremento, double comprimento, Graphics g)
         {
             int xf, yf;
@@ -291,24 +308,29 @@ namespace apCaminhosMarte
                                 new SolidBrush(Color.Black), xf - 15, yf - 10);
             }
         }
-
         //Desenhando as linhas no mapa do formulário.
         private void DesenhaLinhas(Graphics g)
-        {
+        {   
             Caminho aux = null;
             Cidade c1 = null;
             Cidade c2 = null;
             Pen minhaCaneta = new Pen(Color.DarkGreen, 4);
+            //Faz com que as linhas tenha setas nas pontas
             minhaCaneta.CustomEndCap = new AdjustableArrowCap(4, 6);
+
+            //Percorre a matriz de caminhos desenhando todas as cidades e caminhos 
             for (int linhas = 0; linhas < qtdCidades; linhas++)
                 for (int colunas = 0; colunas < qtdCidades; colunas++)
                 {
                     if (matriz[linhas, colunas] != null)
                     {
                         aux = matriz[linhas, colunas];
+
+                        //Busca as cidades com o id na arvore
                         c1 = arvore.BuscarDado(new Cidade(linhas));
                         c2 = arvore.BuscarDado(new Cidade(colunas));
 
+                        //Pega as cordenadas de cada cidade para desenha-las no picture box
                         float xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
                         float yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
                         float xF = pbMapa.Size.Width * c2.CoordenadaX / 4096;
@@ -316,66 +338,80 @@ namespace apCaminhosMarte
 
                         //Onde I => Inicial, F => Final
 
+                        //Duas exceções, o caminho de Senzeni Na até Gondor e de Arrakeen até Gondor
+                        //As duas são caminhos que devem passar por fora do mapa, pois o planeta é uma esfera
                         if ((c1.IdCidade == 2 || c1.IdCidade == 18) && (c2.IdCidade == 10))
                         {
                             g.DrawLine(minhaCaneta, xI, yI, -xF, yF);
                             g.DrawLine(minhaCaneta, 2048 + xI, yI, xF, yF);
                         }
-                        else
+                        else //O resto é tratado normalmente e desenhado com as coordenadas passadas 
                             g.DrawLine(minhaCaneta, xI, yI, xF, yF);
                     }
                 }
         }
-
         //Desenhando as linhas específicas do caminho selecionado.
         private void DesenhaLinhasCaminho(Graphics g)
         {
-            Pen minhaCaneta = new Pen(Color.Purple, 4);
-            minhaCaneta.CustomEndCap = new AdjustableArrowCap(5, 8);
-            SolidBrush meuPincel = new SolidBrush(Color.Black);
+            //Se a lista de cidades não está vazia, existem caminhos á serem desenhados
             if (listaCidades.Count > 0)
             {
+                Pen minhaCaneta = new Pen(Color.Purple, 4);
+                //Faz com que as linhas tenha setas nas pontas
+                minhaCaneta.CustomEndCap = new AdjustableArrowCap(5, 8);
+                SolidBrush meuPincel = new SolidBrush(Color.Black);
+                //Onde I => Inicial, F => Final
                 float xF = -1;
                 float yF = -1;
                 float xI = -1;
                 float yI = -1;
                 Cidade aux = null;
 
+                //Percorre a lista de cidades
                 for (int i = 0; i < listaCidades.Count; i++)
                 {
+                    //Pega a cidade com o idCidade passado 
                     Cidade c1 = arvore.BuscarDado(new Cidade(listaCidades[i].IdCidade));
 
+                    //Pega as coordenadas 
                     xF = pbMapa.Size.Width * c1.CoordenadaX / 4096;
                     yF = pbMapa.Size.Height * c1.CoordenadaY / 2048;
 
+                    //Duas exceções, o caminho de Senzeni Na até Gondor e de Arrakeen até Gondor
+                    //As duas são caminhos que devem passar por fora do mapa, pois o planeta é uma esfera
                     if ((aux != null &&( aux.IdCidade == 2 || aux.IdCidade == 18)) && ( c1.IdCidade == 10))
                     {
                         g.DrawLine(minhaCaneta, xI, yI, -xF, yF);
                         g.DrawLine(minhaCaneta, 2048 + xI, yI, xF, yF);
                     }
-                    else
+                    else //O resto e tratado normalmente
                     {
+                        //O caminho so pode ser desenhado entre duas cidades, como o for pega uma por vez
+                        //Na primeira vez não será possivel desenhar o caminho
                         if (xI > -1 && yI > -1)
                             g.DrawLine(minhaCaneta, xI, yI, xF, yF);
                     }
+
+                    //"Incrementa" as variaveis
                     xI = xF;
                     yI = yF;
                     aux = c1;
                 }
             }
         }  
-
-        //Desenhando as cidades que compõem o Planeta Marte do enunciado com elipses.
+        //Desenhando as cidades que compõem o Planeta Marte.
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
-            if (atualRecursivo != null)
+            if (atualRecursivo != null) //A primeira coisa a se fazer em uma recursão é sair dela
             {
                 SolidBrush meuPincel = new SolidBrush(Color.Black);
+                //Pega as coordenadas da cidade a tual e desenha ela no picturebox
                 float x = pbMapa.Size.Width * atualRecursivo.Info.CoordenadaX / 4096 - 8;
                 float y = pbMapa.Size.Height * atualRecursivo.Info.CoordenadaY / 2048 - 8;
                 g.FillEllipse(meuPincel, x, y, 16, 16);
                 g.DrawString(atualRecursivo.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, x - 5, y + 15);
 
+                //Continua o processo recursivamente
                 DesenhaCidades(g, atualRecursivo.Esq);
                 DesenhaCidades(g, atualRecursivo.Dir);
             }
@@ -384,10 +420,10 @@ namespace apCaminhosMarte
         {
             pbMapa.Invalidate();
         }
-
         //Evento que chama o método de desenho da árvore.
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
+            //Desenha a Arvore
             Graphics g = e.Graphics;
             DesenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
         }

@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// 
+/// Samuel Gomes de Lima Dias - 18169 \\ Victor Botin Avelino - 18172
+///
+
 namespace apCaminhosMarte
 {
   public class NoArvore<Tipo> : IComparable<NoArvore<Tipo>> //, IGravarEmArquivo

@@ -1,4 +1,7 @@
 ﻿using System;
+/// 
+/// Samuel Gomes de Lima Dias - 18169 \\ Victor Botin Avelino - 18172
+///
 
 public class PilhaLista<Dado> : IStack<Dado> where Dado : IComparable<Dado>, ICloneable
 {

@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
+/// 
+/// Samuel Gomes de Lima Dias - 18169 \\ Victor Botin Avelino - 18172
+///
+
 namespace apCaminhosMarte
 {
     class ArvoreBinaria<Dado> where Dado : IComparable<Dado>
