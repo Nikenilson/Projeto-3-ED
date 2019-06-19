@@ -26,8 +26,12 @@ namespace apCaminhosMarte
         {
             InitializeComponent();
         }
+
+
+        //Método que, efetivamente, busca caminhos entre as cidades do mapa.
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
+            //Variáveis para operações do btnBuscar.
             int idCidadeOrigem = lsbOrigem.SelectedIndex;
             int idCidadeDestino = lsbDestino.SelectedIndex;
             int cidadeAtual = idCidadeOrigem;
@@ -36,33 +40,34 @@ namespace apCaminhosMarte
             bool achou = false;
             bool acabou = false;
 
+
             List<PilhaLista<Caminho>> caminhosValidos = new List<PilhaLista<Caminho>>();
             PilhaLista<Caminho> p = new PilhaLista<Caminho>();
 
-            for (int i = 0; i < qtdCidades; i++) // inicia os valores de “passou”    
-                passou[i] = false; // pois ainda não foi em nenhuma cidade  
+            for (int i = 0; i < qtdCidades; i++) //Inicia os valores de “passou”    
+                passou[i] = false; //Pois ainda não foi em nenhuma cidade  
 
             int indice = 0;
-            while (!acabou) //Mudar condicao
+            while (!acabou) 
             {
                 while ((saidaAtual < qtdCidades) && !achou)
-                {   // se não há saida pela cidade testada, verifica a próxima      
+                {   //Se não há saida pela cidade testada, verifica a próxima.    
                     if (matriz[cidadeAtual,saidaAtual] == null)
                         saidaAtual++;
-                    else // se já passou pela cidade testada, verifica se a próxima 
-                            // cidade permite saida  
+                    else //Se já passou pela cidade testada, verifica se a próxima 
+                            //cidade permite saída.
                         if (passou[saidaAtual])
                         saidaAtual++;
-                    else     // se chegou na cidade desejada, empilha o local     
-                                // e termina o processo de procura de caminho    
-                    if (saidaAtual == idCidadeDestino)
+                    else     //Se chegou na cidade desejada, empilha o local     
+                                //e termina o processo de procura de caminho.
+                    if (saidaAtual == idCidadeDestino) //Se a saída é o id do destino,
                     {
-                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual));
+                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual)); //Encontramos o destino.
                         achou = true;
                     }
                     else
                     {
-                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual));
+                        p.Empilhar(new Caminho(cidadeAtual, saidaAtual)); //Vamos a outra cidade, isto é, à cidade de saída.
                         passou[cidadeAtual] = true;
                         cidadeAtual = saidaAtual;
                         saidaAtual = 0;
@@ -71,7 +76,7 @@ namespace apCaminhosMarte
                 if (!achou)
                     if (!p.EstaVazia())
                     {
-                        //Backtracking
+                        //Backtracking --> Retorna o caminho.
                         Caminho aux = p.Desempilhar();
                         saidaAtual = aux.IdCidadeDestino;
                         passou[saidaAtual] = false;
@@ -82,14 +87,14 @@ namespace apCaminhosMarte
                     else
                         acabou = true;
                 if (achou)
-                {  // desempilha a configuração atual da pilha      
-                   // para a pilha da lista de parâmetros  
+                {  //Desempilha a configuração atual da pilha      
+                   //Para a pilha da lista de parâmetros  
 
                     caminhosValidos.Add(new PilhaLista<Caminho>());
                     PilhaLista<Caminho> auxiliar = new PilhaLista<Caminho>();
                     while (!p.EstaVazia())
                     {
-                        auxiliar.Empilhar(p.Desempilhar());
+                        auxiliar.Empilhar(p.Desempilhar()); //Invertemos os caminhos.
                         caminhosValidos[indice].Empilhar(auxiliar.OTopo());
                     }
                     while(!auxiliar.EstaVazia())
@@ -98,7 +103,7 @@ namespace apCaminhosMarte
                     }
                     indice++;
                     achou = false;
-                    //Backtracking
+                    //Backtracking --> Retorna o caminho.
                     Caminho aux = p.Desempilhar();
                     saidaAtual = aux.IdCidadeDestino;
                     passou[saidaAtual] = false;
@@ -107,7 +112,7 @@ namespace apCaminhosMarte
                     saidaAtual++;
                 }
             }
-            //Mostra todos os caminhos no dgvCaminhos
+            //Método que mostra todos os caminhos no dgvCaminho.
             TodosOsCaminhos(caminhosValidos, idCidadeOrigem, idCidadeDestino);
         }
         public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
@@ -120,6 +125,7 @@ namespace apCaminhosMarte
             {
                 for (int i = caminhosValidos.Count - 1; i >= 0; i--)
                 {
+                    //Pilha de clone da pilha de caminhos válidos para evitar transtornos no código.
                     PilhaLista<Caminho> auxiliar = (PilhaLista<Caminho>)caminhosValidos[i].Clone();
                     string[] row = new string[Convert.ToInt32(Math.Pow(qtdCidades, 2) * 2)];
                     int aux = 0;
@@ -137,6 +143,8 @@ namespace apCaminhosMarte
                 MenorCaminho(caminhosValidos, idCidadeOrigem, idCidadeDestino);
             }
         }
+
+        //Método que encontra o menor caminho.
         public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
         {
             dgvMelhorCaminho.Rows.Clear();
@@ -191,7 +199,7 @@ namespace apCaminhosMarte
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            //arq 1
+            //Abertura do primeiro arquivo --> CidadesMarte.txt
             var arq = new StreamReader("CidadesMarte.txt");
             arvore = new ArvoreBinaria<Cidade>();
 
@@ -204,7 +212,7 @@ namespace apCaminhosMarte
             }
             arq.Close();
 
-            //arq2
+            //Abertura do segundo arquivo --> CaminhosEntreCidadesMarte.txt
             var arq2 = new StreamReader("CaminhosEntreCidadesMarte.txt");
             matriz = new Caminho[qtdCidades, qtdCidades];
             string linha2 = null;
@@ -215,7 +223,7 @@ namespace apCaminhosMarte
             }
             arq2.Close();
 
-            //arq3
+            //Abertura do terceiro arquivo --> CidadesMarteOrdenado.txt
             var arq3 = new StreamReader("CidadesMarteOrdenado.txt");
             lsbOrigem.Items.Clear();
             lsbDestino.Items.Clear();
@@ -229,44 +237,12 @@ namespace apCaminhosMarte
             }
             arq3.Close();
 
-            /*
-            MessageBox.Show("Selecione o arquivo CidadesMarte.txt");
-
-            if(oFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                var arq = new StreamReader(oFileDialog.FileName);
-                arvore = new ArvoreBinaria<Cidade>();
-
-                string linha = null;
-                while(!arq.EndOfStream)
-                {
-                    linha = arq.ReadLine();
-                    arvore.Incluir(new Cidade(linha));
-                    qtdCidades++;
-                }
-                arq.Close();
-            }
-
-            MessageBox.Show("Selecione o arquivo CaminhosEntreCidadesMarte.txt");
-
-            if (oFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                var arq = new StreamReader(oFileDialog.FileName);
-                matriz = new Caminho[qtdCidades,qtdCidades];
-                string linha = null;
-                while (!arq.EndOfStream)
-                {
-                    linha = arq.ReadLine();
-                    matriz[int.Parse(linha.Substring(0, 3)),int.Parse(linha.Substring(3, 3))] = new Caminho(linha); 
-                }
-                arq.Close();
-            }
-            */
-
+           
         }
+
+        //Método para escrever os caminhos do mapa deduzidos em uma notação de DataGridView.
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            //listaCaminhos.Clear();
             listaCidades.Clear();
             for (int c = 0; c < (sender as DataGridView).ColumnCount; c++)
             {
@@ -277,8 +253,10 @@ namespace apCaminhosMarte
 
                 listaCidades.Add(new Cidade(Convert.ToInt32(linhaVetor[0])));
             }
-            pbMapa.Invalidate();
+            pbMapa.Invalidate(); //Invalida um desenho para que possa ser feito outro.
         }
+
+        //Método que pinta o mapa na tela do formulário.
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -288,6 +266,8 @@ namespace apCaminhosMarte
             DesenhaLinhasCaminho(g);
 
         }
+
+        //Desenhando a árvore binária na segunda tabpage do formulário.
         private void DesenhaArvore(bool primeiraVez, NoArvore<Cidade> raiz,int x, int y, double angulo, double incremento, double comprimento, Graphics g)
         {
             int xf, yf;
@@ -311,6 +291,8 @@ namespace apCaminhosMarte
                                 new SolidBrush(Color.Black), xf - 15, yf - 10);
             }
         }
+
+        //Desenhando as linhas no mapa do formulário.
         private void DesenhaLinhas(Graphics g)
         {
             Caminho aux = null;
@@ -344,6 +326,8 @@ namespace apCaminhosMarte
                     }
                 }
         }
+
+        //Desenhando as linhas específicas do caminho selecionado.
         private void DesenhaLinhasCaminho(Graphics g)
         {
             Pen minhaCaneta = new Pen(Color.Purple, 4);
@@ -379,7 +363,9 @@ namespace apCaminhosMarte
                     aux = c1;
                 }
             }
-        }   
+        }  
+
+        //Desenhando as cidades que compõem o Planeta Marte do enunciado com elipses.
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
             if (atualRecursivo != null)
@@ -398,14 +384,12 @@ namespace apCaminhosMarte
         {
             pbMapa.Invalidate();
         }
+
+        //Evento que chama o método de desenho da árvore.
         private void tpArvore_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             DesenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
-        }
-        void dgvCaminho_OnRowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            
         }
     }
 }
