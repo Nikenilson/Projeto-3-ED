@@ -20,7 +20,8 @@ namespace apCaminhosMarte
         ArvoreBinaria<Cidade> arvore;
         Caminho[,] matriz;
         int qtdCidades = 0;
-        List<Caminho> listaCaminhos = new List<Caminho>();
+        //List<Caminho> listaCaminhos = new List<Caminho>();
+        List<Cidade> listaCidades = new List<Cidade>();
 
         public Form1()
         {
@@ -114,6 +115,7 @@ namespace apCaminhosMarte
         public void TodosOsCaminhos(List<PilhaLista<Caminho>> caminhosValidos, int idCidadeOrigem, int idCidadeDestino)
         {
             dgvCaminho.Rows.Clear();
+            dgvCaminho.ColumnCount = 23; //Numero maximo e cidades
             if (caminhosValidos.Count == 0)
                 MessageBox.Show("Nenhum caminho encontrado!");
             else
@@ -129,7 +131,7 @@ namespace apCaminhosMarte
                     while (!auxiliar.EstaVazia())
                     {
                         caminhoAux = auxiliar.Desempilhar();
-                         arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
+                        arvore.Existe(new Cidade(caminhoAux.IdCidadeDestino));
                         row[aux++] = caminhoAux.IdCidadeDestino + " - " + arvore.Atual.Info.Nome;
                     }
                     dgvCaminho.Rows.Add(row);
@@ -140,6 +142,7 @@ namespace apCaminhosMarte
         public void MenorCaminho(List<PilhaLista<Caminho>> caminhosValidos,int idCidadeOrigem, int idCidadeDestino)
         {
             dgvMelhorCaminho.Rows.Clear();
+            dgvMelhorCaminho.ColumnCount = 23;//Numero maximo e cidades
             int menorDistancia = 0;
             int indiceMenor = 0;
             List<PilhaLista<Caminho>> aux = new List<PilhaLista<Caminho>>();
@@ -265,19 +268,18 @@ namespace apCaminhosMarte
         }
         private void dgvMelhorCaminho_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            listaCaminhos.Clear();
-            for (int c = 0; c < (sender as DataGridView).ColumnCount - 1; c += 2)
+            //listaCaminhos.Clear();
+            listaCidades.Clear();
+            for (int c = 0; c < (sender as DataGridView).ColumnCount; c++)
             {
-                if ((sender as DataGridView).Rows[e.RowIndex].Cells[c + 1].Value == null
-                    || (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value == null)
+                if (e.RowIndex < 0 || (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value == null)
                     break;
                 string linha = (sender as DataGridView).Rows[e.RowIndex].Cells[c].Value.ToString();
-                string linha2 = (sender as DataGridView).Rows[e.RowIndex].Cells[c + 1].Value.ToString();
                 string[] linhaVetor = linha.Split('-');
-                string[] linha2Vetor = linha2.Split('-');
 
-                listaCaminhos.Add(new Caminho(Convert.ToInt32(linhaVetor[0]), Convert.ToInt32(linha2Vetor[0])));
+                listaCidades.Add(new Cidade(Convert.ToInt32(linhaVetor[0])));
             }
+            pbMapa.Invalidate();
         }
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
@@ -338,27 +340,31 @@ namespace apCaminhosMarte
         }
         private void DesenhaLinhasCaminho(Graphics g)
         {
-            Pen minhaCaneta = new Pen(Color.Black, 20);
+            Pen minhaCaneta = new Pen(Color.Purple, 4);
             SolidBrush meuPincel = new SolidBrush(Color.Black);
-            if (listaCaminhos != null)
-            { 
-                for(int i = 0; i < listaCaminhos.Count;i++)
-                {
-                    Caminho aux = listaCaminhos[i];
-                    Cidade c1 = arvore.BuscarDado(new Cidade(aux.IdCidadeOrigem));
-                    Cidade c2 = arvore.BuscarDado(new Cidade(aux.IdCidadeDestino));
-                    float xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
-                    float yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
-                    float xF = pbMapa.Size.Width * c2.CoordenadaX / 4096;
-                    float yF = pbMapa.Size.Height * c2.CoordenadaY / 2048;
-                    g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, xI - 5, yI + 15);
-                    g.DrawString(arvore.Atual.Info.Nome, new Font("Comic Sans", 12, FontStyle.Regular), meuPincel, xF - 5, yF + 15);
-                    //Onde I => Inicio, F => Fim
+            if (listaCidades.Count > 0)
+            {
+                float xI = -1;
+                float yI = -1;
+                float xF = -1;
+                float yF = -1;
 
-                    g.DrawLine(minhaCaneta, xI, yI, xF, yF);
-                }    
+                for (int i = 0; i < listaCidades.Count; i++)
+                {
+                    Cidade c1 = arvore.BuscarDado(new Cidade(listaCidades[i].IdCidade));                 
+
+                    xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
+                    yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
+
+                    if (xF > -1 && yF > -1)
+                        g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+
+                    xF = xI;
+                    yF = yI;
+                }
             }
-        }
+        }   
+
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
             if (atualRecursivo != null)
@@ -385,7 +391,7 @@ namespace apCaminhosMarte
 
         void dgvCaminho_OnRowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            MessageBox.Show("Clicked RowHeader!");
+            
         }
     }
 }
