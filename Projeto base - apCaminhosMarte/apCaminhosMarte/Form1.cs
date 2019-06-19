@@ -21,9 +21,7 @@ namespace apCaminhosMarte
         ArvoreBinaria<Cidade> arvore;
         Caminho[,] matriz;
         int qtdCidades = 0;
-        //List<Caminho> listaCaminhos = new List<Caminho>();
         List<Cidade> listaCidades = new List<Cidade>();
-
         public Form1()
         {
             InitializeComponent();
@@ -107,7 +105,6 @@ namespace apCaminhosMarte
                     cidadeAtual = aux.IdCidadeOrigem;
                     aux = null;
                     saidaAtual++;
-
                 }
             }
             //Mostra todos os caminhos no dgvCaminhos
@@ -319,8 +316,8 @@ namespace apCaminhosMarte
             Caminho aux = null;
             Cidade c1 = null;
             Cidade c2 = null;
-            Pen minhaCaneta = new Pen(Color.DarkGreen, 2);
-            minhaCaneta.CustomEndCap = new AdjustableArrowCap(8, 8);
+            Pen minhaCaneta = new Pen(Color.DarkGreen, 4);
+            minhaCaneta.CustomEndCap = new AdjustableArrowCap(4, 6);
             for (int linhas = 0; linhas < qtdCidades; linhas++)
                 for (int colunas = 0; colunas < qtdCidades; colunas++)
                 {
@@ -344,15 +341,13 @@ namespace apCaminhosMarte
                         }
                         else
                             g.DrawLine(minhaCaneta, xI, yI, xF, yF);
-
-
                     }
                 }
         }
         private void DesenhaLinhasCaminho(Graphics g)
         {
             Pen minhaCaneta = new Pen(Color.Purple, 4);
-            minhaCaneta.CustomEndCap = new AdjustableArrowCap(8, 8);
+            minhaCaneta.CustomEndCap = new AdjustableArrowCap(5, 8);
             SolidBrush meuPincel = new SolidBrush(Color.Black);
             if (listaCidades.Count > 0)
             {
@@ -379,14 +374,12 @@ namespace apCaminhosMarte
                         if (xI > -1 && yI > -1)
                             g.DrawLine(minhaCaneta, xI, yI, xF, yF);
                     }
-
                     xI = xF;
                     yI = yF;
                     aux = c1;
                 }
             }
         }   
-
         private void DesenhaCidades(Graphics g, NoArvore<Cidade> atualRecursivo)
         {
             if (atualRecursivo != null)
@@ -410,33 +403,9 @@ namespace apCaminhosMarte
             Graphics g = e.Graphics;
             DesenhaArvore(true, arvore.Raiz, (int)pnlArvore.Width / 2, 0, Math.PI / 2, Math.PI / 2.5, 300, g);
         }
-
         void dgvCaminho_OnRowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             
         }
     }
 }
-/*
-
-Roteiro de utilização
-
--Quando o programa iniciar sua execução, ler o arquivo CidadesMarte.txt e montar uma árvore
-binária de busca armazenando o objeto que representa uma cidade, como todos os seus campos.
-// tA lA
-
--No evento Paint do PictureBox - exibir os nomes e locais das cidades no mapa, de acordo com a
-proporção entre coordenadas das cidades referentes ao tamanho original (4096x2048) e as
-dimensões atuais do picturebox.// tA lA
-
--No evento Click do btnBuscar – procurar os caminhos entre as cidades selecionadas no
-lsbOrigem e lsbDestino, exibindo todos os caminhos no dvgCaminhos (um por linha) // tA lA
-
--O melhor caminho no dgvMelhorCaminho. // tA lA
-
--Usar retas para ligar as cidades no mapa referente ao caminho
-da linha selecionada no dgvCaminhos.
-
--Na guia [Árvore de Cidades] – exibir a árvore mostrando os números e nomes das cidades.// tA lA
-
-*/
