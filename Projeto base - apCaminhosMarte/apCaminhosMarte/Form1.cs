@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 /// 
 /// Samuel Gomes de Lima Dias - 18169 \\ Victor Botin Avelino - 18172
@@ -284,8 +285,9 @@ namespace apCaminhosMarte
         private void pbMapa_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            DesenhaLinhas(g);
+            
             DesenhaCidades(g, arvore.Raiz);
+            DesenhaLinhas(g);
             DesenhaLinhasCaminho(g);
 
         }
@@ -317,7 +319,8 @@ namespace apCaminhosMarte
             Caminho aux = null;
             Cidade c1 = null;
             Cidade c2 = null;
-            Pen minhaCaneta = new Pen(Color.DimGray, 2);
+            Pen minhaCaneta = new Pen(Color.DarkGreen, 2);
+            minhaCaneta.CustomEndCap = new AdjustableArrowCap(8, 8);
             for (int linhas = 0; linhas < qtdCidades; linhas++)
                 for (int colunas = 0; colunas < qtdCidades; colunas++)
                 {
@@ -334,33 +337,52 @@ namespace apCaminhosMarte
 
                         //Onde I => Inicial, F => Final
 
-                        g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+                        if ((c1.IdCidade == 2 || c1.IdCidade == 18) && (c2.IdCidade == 10))
+                        {
+                            g.DrawLine(minhaCaneta, xI, yI, -xF, yF);
+                            g.DrawLine(minhaCaneta, 2048 + xI, yI, xF, yF);
+                        }
+                        else
+                            g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+
+
                     }
                 }
         }
         private void DesenhaLinhasCaminho(Graphics g)
         {
             Pen minhaCaneta = new Pen(Color.Purple, 4);
+            minhaCaneta.CustomEndCap = new AdjustableArrowCap(8, 8);
             SolidBrush meuPincel = new SolidBrush(Color.Black);
             if (listaCidades.Count > 0)
             {
-                float xI = -1;
-                float yI = -1;
                 float xF = -1;
                 float yF = -1;
+                float xI = -1;
+                float yI = -1;
+                Cidade aux = null;
 
                 for (int i = 0; i < listaCidades.Count; i++)
                 {
-                    Cidade c1 = arvore.BuscarDado(new Cidade(listaCidades[i].IdCidade));                 
+                    Cidade c1 = arvore.BuscarDado(new Cidade(listaCidades[i].IdCidade));
 
-                    xI = pbMapa.Size.Width * c1.CoordenadaX / 4096;
-                    yI = pbMapa.Size.Height * c1.CoordenadaY / 2048;
+                    xF = pbMapa.Size.Width * c1.CoordenadaX / 4096;
+                    yF = pbMapa.Size.Height * c1.CoordenadaY / 2048;
 
-                    if (xF > -1 && yF > -1)
-                        g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+                    if ((aux != null &&( aux.IdCidade == 2 || aux.IdCidade == 18)) && ( c1.IdCidade == 10))
+                    {
+                        g.DrawLine(minhaCaneta, xI, yI, -xF, yF);
+                        g.DrawLine(minhaCaneta, 2048 + xI, yI, xF, yF);
+                    }
+                    else
+                    {
+                        if (xI > -1 && yI > -1)
+                            g.DrawLine(minhaCaneta, xI, yI, xF, yF);
+                    }
 
-                    xF = xI;
-                    yF = yI;
+                    xI = xF;
+                    yI = yF;
+                    aux = c1;
                 }
             }
         }   
